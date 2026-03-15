@@ -20,8 +20,7 @@ export default function SharedList({ title, table, doneField, placeholder, icon,
 
   const add = async () => {
     if (!text.trim()) return
-    const row = { text: text.trim(), added_by: addedBy, [doneField]: false }
-    if (typeOptions) row.type = itemType
+const row = { [table === 'watchlist' ? 'title' : 'text']: text.trim(), added_by: addedBy, [doneField]: false }    if (typeOptions) row.type = itemType
     await supabase.from(table).insert([row])
     setText('')
   }
