@@ -1,0 +1,200 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;600;700;800&display=swap');
+
+:root {
+  --red: #E8241C;
+  --red-dark: #9B1A14;
+  --red-light: #FF6B6B;
+  --blue: #1A6BBF;
+  --blue-dark: #0D3F73;
+  --blue-light: #5BA3E8;
+  --yellow: #F8C100;
+  --yellow-dark: #C49200;
+  --yellow-light: #FFE566;
+  --green: #2E8B2E;
+  --green-dark: #1A5C1A;
+  --green-light: #5DBF5D;
+  --brown: #8B4513;
+  --sky: #87CEEB;
+  --sky-dark: #5BA3C9;
+  --white: #FFFDF0;
+  --bg: #87CEEB;
+  --bg2: #FFFDF0;
+  --text: #2C1810;
+  --text2: #5C3D2E;
+  --border-radius: 12px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  background-image:
+    radial-gradient(ellipse at 15% 30%, rgba(255,255,255,0.6) 0%, transparent 40%),
+    radial-gradient(ellipse at 75% 20%, rgba(255,255,255,0.5) 0%, transparent 35%),
+    radial-gradient(ellipse at 45% 60%, rgba(255,255,255,0.3) 0%, transparent 30%);
+  min-height: 100vh;
+  color: var(--text);
+}
+
+.pixel-title {
+  font-family: 'Press Start 2P', monospace;
+  image-rendering: pixelated;
+}
+
+.card {
+  background: var(--white);
+  border-radius: var(--border-radius);
+  border: 3px solid var(--brown);
+  box-shadow: 0 4px 0 var(--brown), 0 6px 16px rgba(0,0,0,0.15);
+  padding: 20px;
+}
+
+.card-red {
+  background: var(--white);
+  border: 3px solid var(--red-dark);
+  box-shadow: 0 4px 0 var(--red-dark), 0 6px 16px rgba(232,36,28,0.15);
+}
+
+.card-blue {
+  background: var(--white);
+  border: 3px solid var(--blue-dark);
+  box-shadow: 0 4px 0 var(--blue-dark), 0 6px 16px rgba(26,107,191,0.15);
+}
+
+.card-yellow {
+  background: var(--white);
+  border: 3px solid var(--yellow-dark);
+  box-shadow: 0 4px 0 var(--yellow-dark), 0 6px 16px rgba(248,193,0,0.2);
+}
+
+.card-green {
+  background: var(--white);
+  border: 3px solid var(--green-dark);
+  box-shadow: 0 4px 0 var(--green-dark), 0 6px 16px rgba(46,139,46,0.15);
+}
+
+.btn {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 14px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 2px solid;
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.1s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn:active { transform: translateY(2px); box-shadow: none !important; }
+
+.btn-red {
+  background: var(--red);
+  border-color: var(--red-dark);
+  color: white;
+  box-shadow: 0 3px 0 var(--red-dark);
+}
+
+.btn-blue {
+  background: var(--blue);
+  border-color: var(--blue-dark);
+  color: white;
+  box-shadow: 0 3px 0 var(--blue-dark);
+}
+
+.btn-yellow {
+  background: var(--yellow);
+  border-color: var(--yellow-dark);
+  color: var(--text);
+  box-shadow: 0 3px 0 var(--yellow-dark);
+}
+
+.btn-green {
+  background: var(--green);
+  border-color: var(--green-dark);
+  color: white;
+  box-shadow: 0 3px 0 var(--green-dark);
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: var(--text2);
+  color: var(--text2);
+}
+
+.field {
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 2px solid #ccc;
+  color: var(--text);
+  background: white;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.2s;
+}
+
+.field:focus { border-color: var(--blue); }
+
+.section-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.tag {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+/* Ground strip */
+.ground {
+  height: 32px;
+  background: var(--green);
+  border-top: 4px solid var(--green-dark);
+  position: relative;
+}
