@@ -31,12 +31,20 @@ export default function ThinkingOfYou() {
   const [flash, setFlash] = useState(false)
   const [stars, setStars] = useState([])
 
+  const fetchPings = async () => {
+    const { data } = await supabase
+      .from('pings')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(6)
+    if (data) setPings(data)
+  }
+
   useEffect(() => {
-    supabase.from('pings').select('*').order('created_at', { ascending: false }).limit(6)
-      .then(({ data }) => data && setPings(data))
+    fetchPings()
     const ch = supabase.channel('pings-ch')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'pings' }, payload => {
-        setPings(prev => [payload.new, ...prev].slice(0, 6))
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'pings' }, () => {
+        fetchPings()
         setFlash(true)
         setStars(Array.from({ length: 8 }, (_, i) => ({ id: i, x: Math.random() * 200 - 100, y: Math.random() * 200 - 100 })))
         setTimeout(() => { setFlash(false); setStars([]) }, 2000)
@@ -51,6 +59,7 @@ export default function ThinkingOfYou() {
     setFlash(true)
     setStars(Array.from({ length: 8 }, (_, i) => ({ id: i, x: Math.random() * 200 - 100, y: Math.random() * 200 - 100 })))
     await supabase.from('pings').insert([{ from_name: who }])
+    await fetchPings()
     setTimeout(() => { setPinging(false); setSentMsg(''); setFlash(false); setStars([]) }, 3000)
   }
 
@@ -94,8 +103,9 @@ export default function ThinkingOfYou() {
           <div style={styles.lastPingArea}>
             {pings.length > 0 ? (
               <div style={styles.pingList}>
+                <p style={{ fontSize: 12, fontWeight: 800, color: 'var(--text2)', marginBottom: 8 }}>LAST {pings.length} PINGS</p>
                 {pings.map((ping, i) => (
-                  <div key={i} style={styles.pingRow}>
+                  <div key={ping.id || i} style={styles.pingRow}>
                     <span>{ping.from_name === 'Helena' ? '👩' : '👦'}</span>
                     <span style={{ fontWeight: 700, color: 'var(--text)' }}>{ping.from_name}</span>
                     <span style={{ color: '#aaa', fontSize: 13 }}>— {timeAgo(ping.created_at)}</span>
