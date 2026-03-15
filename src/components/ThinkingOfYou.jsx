@@ -24,7 +24,7 @@ function timeAgo(dateStr) {
 }
 
 export default function ThinkingOfYou() {
-  const [lastPing, setLastPing] = useState(null)
+  const [pings, setPings] = useState([])
   const [pinging, setPinging] = useState(false)
   const [sentMsg, setSentMsg] = useState('')
   const [who, setWho] = useState('Helena')
@@ -32,11 +32,11 @@ export default function ThinkingOfYou() {
   const [stars, setStars] = useState([])
 
   useEffect(() => {
-    supabase.from('pings').select('*').order('created_at', { ascending: false }).limit(1)
-      .then(({ data }) => data?.[0] && setLastPing(data[0]))
+    supabase.from('pings').select('*').order('created_at', { ascending: false }).limit(6)
+      .then(({ data }) => data && setPings(data))
     const ch = supabase.channel('pings-ch')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'pings' }, payload => {
-        setLastPing(payload.new)
+        setPings(prev => [payload.new, ...prev].slice(0, 6))
         setFlash(true)
         setStars(Array.from({ length: 8 }, (_, i) => ({ id: i, x: Math.random() * 200 - 100, y: Math.random() * 200 - 100 })))
         setTimeout(() => { setFlash(false); setStars([]) }, 2000)
@@ -92,10 +92,16 @@ export default function ThinkingOfYou() {
           )}
 
           <div style={styles.lastPingArea}>
-            {lastPing ? (
-              <p style={styles.lastPing}>
-                Last ping: <strong>{lastPing.from_name}</strong> — {timeAgo(lastPing.created_at)}
-              </p>
+            {pings.length > 0 ? (
+              <div style={styles.pingList}>
+                {pings.map((ping, i) => (
+                  <div key={i} style={styles.pingRow}>
+                    <span>{ping.from_name === 'Helena' ? '👩' : '👦'}</span>
+                    <span style={{ fontWeight: 700, color: 'var(--text)' }}>{ping.from_name}</span>
+                    <span style={{ color: '#aaa', fontSize: 13 }}>— {timeAgo(ping.created_at)}</span>
+                  </div>
+                ))}
+              </div>
             ) : (
               <p style={{ ...styles.lastPing, color: '#bbb' }}>No pings yet. Someone's playing it cool. 😎</p>
             )}
@@ -122,5 +128,7 @@ const styles = {
   },
   sentMsg: { fontSize: 15, fontWeight: 700, color: 'var(--green)', marginBottom: 8 },
   lastPingArea: { marginTop: 8, paddingTop: 12, borderTop: '2px solid #eee', width: '100%' },
-  lastPing: { fontSize: 14, color: 'var(--text2)', fontWeight: 600 }
+  lastPing: { fontSize: 14, color: 'var(--text2)', fontWeight: 600 },
+  pingList: { display: 'flex', flexDirection: 'column', gap: 6 },
+  pingRow: { display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, justifyContent: 'center' }
 }
