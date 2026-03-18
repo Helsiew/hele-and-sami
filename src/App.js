@@ -148,10 +148,9 @@ const styles = {
   groundWrap: { position: 'relative', zIndex: 1, marginTop: 24 },
   ground: { background: 'var(--green)', padding: '8px 16px', display: 'flex', justifyContent: 'space-around', alignItems: 'center' },
   footer: { background: 'var(--green-dark)', textAlign: 'center', padding: '10px', fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.8)' },
-  headerAvatar: {
-    width: 48, height: 48, borderRadius: '50%',
-    objectFit: 'cover', border: '3px solid white',
-    boxShadow: '0 3px 8px rgba(0,0,0,0.2)',
-    animation: 'bounce 1s ease-in-out infinite'
-  },
+ headerAvatar: {
+  width: 48, height: 48,
+  objectFit: 'contain',
+  animation: 'bounce 1s ease-in-out infinite'
+}
 }
