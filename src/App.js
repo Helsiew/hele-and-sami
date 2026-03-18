@@ -29,12 +29,12 @@ export default function App() {
 
       <header style={styles.header}>
         <div style={styles.titleRow}>
-          <span style={{ fontSize: 40, animation: 'bounce 1s ease-in-out infinite' }}>🍄</span>
-          <div>
-            <h1 className="pixel-title" style={styles.title}>HELENA & SAMI</h1>
-            <p style={styles.subtitle}>our little corner of the internet ⭐</p>
-          </div>
-          <span style={{ fontSize: 40, animation: 'bounce 1s ease-in-out infinite 0.3s' }}>⭐</span>
+          <img src="/helena.png" alt="Helena" style={{ ...styles.headerAvatar, animationDelay: '0s' }} />
+<div>
+  <h1 className="pixel-title" style={styles.title}>HELENA & SAMI</h1>
+  <p style={styles.subtitle}>our little corner of the internet ⭐</p>
+</div>
+<img src="/sami.png" alt="Sami" style={{ ...styles.headerAvatar, animationDelay: '0.3s' }} />
         </div>
 
         {/* Pixel divider */}
@@ -147,5 +147,11 @@ const styles = {
   twoCol: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 },
   groundWrap: { position: 'relative', zIndex: 1, marginTop: 24 },
   ground: { background: 'var(--green)', padding: '8px 16px', display: 'flex', justifyContent: 'space-around', alignItems: 'center' },
-  footer: { background: 'var(--green-dark)', textAlign: 'center', padding: '10px', fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.8)' }
+  footer: { background: 'var(--green-dark)', textAlign: 'center', padding: '10px', fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.8)' },
+  headerAvatar: {
+    width: 48, height: 48, borderRadius: '50%',
+    objectFit: 'cover', border: '3px solid white',
+    boxShadow: '0 3px 8px rgba(0,0,0,0.2)',
+    animation: 'bounce 1s ease-in-out infinite'
+  },
 }
