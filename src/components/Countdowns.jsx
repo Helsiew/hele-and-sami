@@ -33,7 +33,6 @@ export default function Countdowns() {
   const [label, setLabel] = useState('')
   const [date, setDate] = useState('')
   const [emoji, setEmoji] = useState('✈️')
-  const [tick, setTick] = useState(0)
 
   useEffect(() => {
     supabase.from('settings').select('*').eq('key', HERO_KEY).single()
@@ -58,8 +57,7 @@ export default function Countdowns() {
       })
       .subscribe()
 
-    const timer = setInterval(() => setTick(t => t + 1), 60000)
-    return () => { clearInterval(timer); supabase.removeChannel(ch) }
+    return () => supabase.removeChannel(ch)
   }, [])
 
   const saveHero = async () => {
@@ -99,7 +97,7 @@ export default function Countdowns() {
 
   return (
     <div>
-      {/* ── HERO COUNTDOWN ── */}
+      {/* HERO COUNTDOWN */}
       <div style={styles.heroWrap}>
         <div style={styles.heroTop}>
           <div className="section-label" style={{ color: 'var(--red-dark)', marginBottom: 0, fontSize: 9 }}>
@@ -124,28 +122,15 @@ export default function Countdowns() {
                   <span style={styles.heroDaysWord}>days to go</span>
                 </div>
 
-                {/* Progress track */}
                 <div style={styles.trackWrap}>
                   <div style={styles.track}>
                     <div style={{ ...styles.trackFill, width: `${progress}%` }} />
-
-                    {/* Helena walks from left */}
-                    <div style={{ ...styles.avatar, left: `${progress / 2}%`, transition: 'left 1s ease' }}>
-                      <img
-                        src="/helena.png"
-                        alt="Helena"
-                        style={styles.avatarImg}
-                      />
+                    <div style={{ ...styles.avatar, left: `${progress / 2}%` }}>
+                      <img src="/helena.png" alt="Helena" style={styles.avatarImg} />
                       <div style={styles.avatarName}>Helena</div>
                     </div>
-
-                    {/* Sami walks from right */}
-                    <div style={{ ...styles.avatar, right: `${progress / 2}%`, transition: 'right 1s ease' }}>
-                      <img
-                        src="/sami.png"
-                        alt="Sami"
-                        style={styles.avatarImg}
-                      />
+                    <div style={{ ...styles.avatar, right: `${progress / 2}%` }}>
+                      <img src="/sami.png" alt="Sami" style={styles.avatarImg} />
                       <div style={styles.avatarName}>Sami</div>
                     </div>
                   </div>
@@ -166,15 +151,13 @@ export default function Countdowns() {
         ) : (
           <div style={styles.heroEmpty}>
             <span style={{ fontSize: 32 }}>✈️</span>
-            <p style={{ fontSize: 15, color: 'var(--text2)', fontWeight: 600 }}>
-              Set your next meetup date!
-            </p>
+            <p style={{ fontSize: 15, color: 'var(--text2)', fontWeight: 600 }}>Set your next meetup date!</p>
             <button className="btn btn-red" onClick={openEditHero}>➕ Set date</button>
           </div>
         )}
       </div>
 
-      {/* ── EDIT HERO MODAL ── */}
+      {/* EDIT MODAL */}
       {editingHero && (
         <div style={styles.modalBg}>
           <div style={styles.modal}>
@@ -203,7 +186,7 @@ export default function Countdowns() {
         </div>
       )}
 
-      {/* ── OTHER COUNTDOWNS ── */}
+      {/* OTHER COUNTDOWNS */}
       <div style={{ marginTop: 20 }}>
         <div style={styles.subHeader}>
           <div className="section-label" style={{ color: 'var(--yellow-dark)', marginBottom: 0, fontSize: 9 }}>
