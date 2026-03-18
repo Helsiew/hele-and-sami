@@ -149,7 +149,7 @@ const styles = {
   ground: { background: 'var(--green)', padding: '8px 16px', display: 'flex', justifyContent: 'space-around', alignItems: 'center' },
   footer: { background: 'var(--green-dark)', textAlign: 'center', padding: '10px', fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.8)' },
  headerAvatar: {
-  width: 48, height: 48,
+  width: 100, height: 100,
   objectFit: 'contain',
   animation: 'bounce 1s ease-in-out infinite'
 }
