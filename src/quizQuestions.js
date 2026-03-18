@@ -1,7 +1,7 @@
 export const ALL_QUESTIONS = [
   {
     question: "Where did Helena and Sami first meet?",
-    options: ["Baes", "Jeffos", "Barybary", "Spectre"],
+    options: ["Baes", "Jeffos", "Barbary", "Spectre"],
     answer: "Jeffos"
   },
   {
@@ -51,7 +51,7 @@ export const ALL_QUESTIONS = [
   },
   {
     question: "Who will win in a padel match?",
-    options: ["Sami, duh", "Sami, again", "Sami who ONCE played pro handball", "Sami, if she's being blindfolded"],
+    options: ["Sami who ONCE played pro handball", "Sami, duh", "Sami, again", "Sami, if she's being blindfolded"],
     answer: "Sami, if she's being blindfolded"
   },
   {
@@ -65,7 +65,7 @@ export const ALL_QUESTIONS = [
     answer: "The quiz is biased and I stand by it"
   },
   {
-    question: "Who is the real character?",
+    question: "Who is the real main character?",
     options: ["Sami", "Mohand", "Mr.Terki", "None of the options"],
     answer: "None of the options"
   },
@@ -78,7 +78,12 @@ export const ALL_QUESTIONS = [
     question: "Who actually runs the show here?",
     options: ["Helena", "Also Helena", "Still Helena", "Sami just works here"],
     answer: "Sami just works here"
-  }
+  },
+  {
+    question: "When did Helena moved to SG?",
+    options: ["2021", "2022", "2023", "2024"],
+    answer: "2022"
+   }
 ]
 
 export const QUESTIONS_PER_VISIT = 3
