@@ -20,7 +20,8 @@ export default function SharedList({ title, table, doneField, placeholder, icon,
 
   const add = async () => {
     if (!text.trim()) return
-const row = { [table === 'watchlist' ? 'title' : 'text']: text.trim(), added_by: addedBy, [doneField]: false }    if (typeOptions) row.type = itemType
+    const row = { [table === 'watchlist' ? 'title' : 'text']: text.trim(), added_by: addedBy, [doneField]: false }
+    if (typeOptions) row.type = itemType
     await supabase.from(table).insert([row])
     setText('')
   }
@@ -130,7 +131,8 @@ const styles = {
   byRow: { display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' },
   byBtn: { fontSize: 13, fontWeight: 700, padding: '6px 12px', borderRadius: 8, border: '2px solid', cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s' },
   inputRow: { display: 'flex', gap: 8 },
-addBtn: { padding: '10px 16px', border: '2px solid', borderRadius: 8, color: 'white', fontWeight: 800, fontSize: 13, cursor: 'pointer', fontFamily: "'Nunito', sans-serif", whiteSpace: 'nowrap' },  list: { display: 'flex', flexDirection: 'column', gap: 8 },
+  addBtn: { padding: '10px 16px', border: '2px solid', borderRadius: 8, color: 'white', fontWeight: 800, fontSize: 13, cursor: 'pointer', fontFamily: "'Nunito', sans-serif", whiteSpace: 'nowrap' },
+  list: { display: 'flex', flexDirection: 'column', gap: 8 },
   item: { display: 'flex', alignItems: 'center', gap: 10, background: 'white', borderRadius: 10, border: '2px solid #eee', padding: '10px 12px', transition: 'opacity 0.2s' },
   check: { width: 24, height: 24, borderRadius: 6, border: '2px solid', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0, transition: 'all 0.15s' },
   itemContent: { flex: 1, minWidth: 0 },
