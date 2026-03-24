@@ -1,13 +1,23 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from '../supabaseClient'
 
-const SARCASTIC_SENT = [
-  "Sent. He'll see it... eventually. 🙄",
-  "Ping dispatched. Don't hold your breath. 💨",
-  "Done. You're so needy. Adorably. 🥺",
-  "Message sent into the void. 🌌",
-  "He knows. Probably. Maybe. 🤷",
+const MOODS = [
+  { type: 'thinking of u',   emoji: '❤️',  label: 'thinking of u' },
+  { type: 'missing u',       emoji: '😭',  label: 'missing u' },
+  { type: "i'm mad at u",    emoji: '😤',  label: "i'm mad at u" },
+  { type: 'u make me happy', emoji: '😊',  label: 'u make me happy' },
+  { type: 'need a hug',      emoji: '🤗',  label: 'need a hug' },
+  { type: 'u made me smile', emoji: '🌟',  label: 'u made me smile' },
 ]
+
+const MOOD_REPLIES = {
+  'thinking of u':   ["Sent. Sappily and without shame. 🥹", "They're blushing. Probably. 🌸", "Cute. Disgustingly cute. 💕"],
+  'missing u':       ["Ache dispatched. Handle with care. 💔", "So needy. So adorably needy. 😭", "Miss them more, coward. 🌊"],
+  "i'm mad at u":    ["Uh oh. Drama served. 👀", "They should be nervous. Good. 😤", "Sent. Best of luck to them. 😈"],
+  'u make me happy': ["Softest thing ever. Sent. 🥺", "They'll screenshot this forever. 📸", "Ugh. You two are a lot. 💛"],
+  'need a hug':      ["Virtual hug en route. ETA: unknown. 🤗", "Hug request dispatched. 🫂", "Aww. They better deliver."],
+  'u made me smile': ["Good vibes sent. 🌟", "They'll grin like an idiot. Good. 😁", "Smile tax: one hug. 😌"],
+}
 
 function rand(arr) { return arr[Math.floor(Math.random() * arr.length)] }
 
@@ -23,9 +33,14 @@ function timeAgo(dateStr) {
   return `${days}d ago`
 }
 
+function parsePing(ping) {
+  const parts = ping.from_name.split('|')
+  return { name: parts[0], mood: parts[1] || null }
+}
+
 export default function ThinkingOfYou() {
   const [pings, setPings] = useState([])
-  const [pinging, setPinging] = useState(false)
+  const [pinging, setPinging] = useState(null)
   const [sentMsg, setSentMsg] = useState('')
   const [who, setWho] = useState('Helena')
   const [flash, setFlash] = useState(false)
@@ -52,22 +67,22 @@ export default function ThinkingOfYou() {
     return () => supabase.removeChannel(ch)
   }, [])
 
-  const sendPing = async () => {
+  const sendPing = async (type) => {
     if (pinging) return
-    setPinging(true)
-    setSentMsg(rand(SARCASTIC_SENT))
+    setPinging(type)
+    setSentMsg(rand(MOOD_REPLIES[type] || ['Sent! 💌']))
     setFlash(true)
     setStars(Array.from({ length: 8 }, (_, i) => ({ id: i, x: Math.random() * 200 - 100, y: Math.random() * 200 - 100 })))
-    await supabase.from('pings').insert([{ from_name: who }])
+    await supabase.from('pings').insert([{ from_name: `${who}|${type}` }])
     await fetchPings()
-    setTimeout(() => { setPinging(false); setSentMsg(''); setFlash(false); setStars([]) }, 3000)
+    setTimeout(() => { setPinging(null); setSentMsg(''); setFlash(false); setStars([]) }, 3000)
   }
 
   return (
     <div>
       <div style={styles.header}>
         <div className="section-label" style={{ color: 'var(--red-dark)', marginBottom: 0, fontSize: 9 }}>
-          ❤️ THINKING OF U
+          💌 SEND A VIBE
         </div>
       </div>
 
@@ -78,8 +93,8 @@ export default function ThinkingOfYou() {
           ))}
 
           <p style={styles.sub}>
-            tap the button to send a little "thinking of u" 💌<br />
-            <span style={{ fontSize: 13, color: '#aaa' }}>(it does nothing except make them smile)</span>
+            tap a button to send a little feeling 💌<br />
+            <span style={{ fontSize: 12, color: '#aaa' }}>(it does nothing except make them smile)</span>
           </p>
 
           <div style={styles.whoRow}>
@@ -91,29 +106,51 @@ export default function ThinkingOfYou() {
             ))}
           </div>
 
-          <button onClick={sendPing} disabled={pinging}
-            style={{ ...styles.pingBtn, background: pinging ? '#eee' : 'var(--red)', color: pinging ? 'var(--text2)' : 'white', borderColor: pinging ? '#ccc' : 'var(--red-dark)', boxShadow: pinging ? 'none' : '0 5px 0 var(--red-dark)', transform: pinging ? 'translateY(3px)' : 'none' }}>
-            {pinging ? '💌 Sent!' : '❤️ Send a ping'}
-          </button>
+          <div style={styles.moodGrid}>
+            {MOODS.map(m => {
+              const isSending = pinging === m.type
+              return (
+                <button key={m.type} onClick={() => sendPing(m.type)} disabled={!!pinging}
+                  style={{ ...styles.moodBtn, opacity: pinging && !isSending ? 0.5 : 1, background: isSending ? 'var(--yellow-light)' : 'white', borderColor: isSending ? 'var(--yellow-dark)' : '#ddd', boxShadow: isSending ? '0 3px 0 var(--yellow-dark)' : '0 3px 0 #ccc', transform: isSending ? 'translateY(2px)' : 'none' }}>
+                  <span style={{ fontSize: 22 }}>{m.emoji}</span>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: isSending ? 'var(--yellow-dark)' : 'var(--text2)', lineHeight: 1.2 }}>
+                    {isSending ? 'sent! 💌' : m.label}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
 
-          {sentMsg && (
-            <p style={styles.sentMsg}>{sentMsg}</p>
-          )}
+          {sentMsg && <p style={styles.sentMsg}>{sentMsg}</p>}
 
           <div style={styles.lastPingArea}>
             {pings.length > 0 ? (
-              <div style={styles.pingList}>
-                <p style={{ fontSize: 12, fontWeight: 800, color: 'var(--text2)', marginBottom: 8 }}>LAST {pings.length} PINGS</p>
-                {pings.map((ping, i) => (
-                  <div key={ping.id || i} style={styles.pingRow}>
-                    <span>{ping.from_name === 'Helena' ? '👩' : '👦'}</span>
-                    <span style={{ fontWeight: 700, color: 'var(--text)' }}>{ping.from_name}</span>
-                    <span style={{ color: '#aaa', fontSize: 13 }}>— {timeAgo(ping.created_at)}</span>
-                  </div>
-                ))}
+              <div>
+                <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 7, fontWeight: 800, color: 'var(--text2)', marginBottom: 10 }}>
+                  LAST {pings.length} VIBES
+                </p>
+                <div style={styles.pingList}>
+                  {pings.map((ping, i) => {
+                    const { name, mood } = parsePing(ping)
+                    const moodData = MOODS.find(m => m.type === mood)
+                    return (
+                      <div key={ping.id || i} style={styles.pingRow}>
+                        <span style={{ fontSize: 18 }}>{name === 'Helena' ? '👩' : '👦'}</span>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 1 }}>
+                          <span style={{ fontWeight: 800, color: 'var(--text)', fontSize: 12 }}>{name}</span>
+                          {mood
+                            ? <span style={{ fontSize: 11, color: 'var(--red-dark)' }}>{moodData?.emoji} {mood}</span>
+                            : <span style={{ fontSize: 11, color: 'var(--text2)' }}>❤️ ping</span>
+                          }
+                          <span style={{ color: '#bbb', fontSize: 10 }}>{timeAgo(ping.created_at)}</span>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
               </div>
             ) : (
-              <p style={{ ...styles.lastPing, color: '#bbb' }}>No pings yet. Someone's playing it cool. 😎</p>
+              <p style={{ color: '#bbb', fontSize: 13, fontWeight: 600 }}>No vibes yet. Someone's playing it cool. 😎</p>
             )}
           </div>
         </div>
@@ -126,19 +163,19 @@ const styles = {
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 },
   card: {
     background: 'var(--white)', borderRadius: 16, border: '3px solid',
-    padding: '24px 20px', textAlign: 'center', transition: 'border-color 0.3s, box-shadow 0.3s'
+    padding: '20px 16px', textAlign: 'center', transition: 'border-color 0.3s, box-shadow 0.3s'
   },
-  sub: { fontSize: 15, color: 'var(--text2)', fontWeight: 600, marginBottom: 16, lineHeight: 1.6 },
-  whoRow: { display: 'flex', gap: 10, justifyContent: 'center', marginBottom: 16 },
-  whoBtn: { fontSize: 14, fontWeight: 700, padding: '8px 16px', borderRadius: 8, border: '2px solid', cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s' },
-  pingBtn: {
-    fontSize: 16, fontWeight: 800, padding: '14px 36px',
-    border: '3px solid', borderRadius: 12, cursor: 'pointer',
-    fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s', marginBottom: 12
+  sub: { fontSize: 14, color: 'var(--text2)', fontWeight: 600, marginBottom: 12, lineHeight: 1.6 },
+  whoRow: { display: 'flex', gap: 10, justifyContent: 'center', marginBottom: 14 },
+  whoBtn: { fontSize: 14, fontWeight: 700, padding: '7px 14px', borderRadius: 8, border: '2px solid', cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s' },
+  moodGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, width: '100%', marginBottom: 12 },
+  moodBtn: {
+    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
+    padding: '10px 6px', border: '2px solid', borderRadius: 10,
+    cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s'
   },
-  sentMsg: { fontSize: 15, fontWeight: 700, color: 'var(--green)', marginBottom: 8 },
-  lastPingArea: { marginTop: 8, paddingTop: 12, borderTop: '2px solid #eee', width: '100%' },
-  lastPing: { fontSize: 14, color: 'var(--text2)', fontWeight: 600 },
-  pingList: { display: 'flex', flexDirection: 'column', gap: 6 },
-  pingRow: { display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, justifyContent: 'center' }
+  sentMsg: { fontSize: 14, fontWeight: 700, color: 'var(--green)', marginBottom: 8 },
+  lastPingArea: { marginTop: 10, paddingTop: 12, borderTop: '2px solid #eee', width: '100%', textAlign: 'left' },
+  pingList: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 },
+  pingRow: { display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 13 }
 }

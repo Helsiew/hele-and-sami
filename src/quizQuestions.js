@@ -87,7 +87,7 @@ export const ALL_QUESTIONS = [
 ]
 
 export const QUESTIONS_PER_VISIT = 3
-export const PASS_SCORE = 2
+export const PASS_SCORE = 3
 
 export function getDailyQuestions() {
   const shuffled = [...ALL_QUESTIONS]

@@ -92,6 +92,7 @@ export default function App() {
               emptyMsg="Nothing to watch. Pick something. 🍿"
               emptyEmoji="🍿"
               doneLabel="WATCHED"
+              visibleLimit={15}
             />
           </section>
 
@@ -108,6 +109,7 @@ export default function App() {
               emptyMsg="No bets yet. Someone's scared. 🐔"
               emptyEmoji="🐔"
               doneLabel="SETTLED"
+              noMeta
             />
           </section>
         </div>

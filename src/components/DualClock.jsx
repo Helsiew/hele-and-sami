@@ -32,13 +32,13 @@ function ClockCard({ name, city, tz, avatar, color, shadowColor }) {
   }, [])
   return (
     <div style={{ ...styles.clock, borderColor: shadowColor, boxShadow: `0 5px 0 ${shadowColor}` }}>
-      <div style={{ fontSize: 36, marginBottom: 4 }}>{avatar}</div>
+      <img src={avatar} alt={name} style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: '50%', border: '3px solid #eee', marginBottom: 4 }} />
       <div style={{ fontSize: 13, fontWeight: 800, color: shadowColor, marginBottom: 2 }}>{name}</div>
-      <div style={{ fontSize: 13, color: 'var(--text2)', marginBottom: 10 }}>📍 {city}</div>
+      <div style={{ fontSize: 13, color: 'var(--text2)', marginBottom: 6 }}>📍 {city}</div>
       <div style={{ fontSize: 32, fontWeight: 800, color, fontVariantNumeric: 'tabular-nums', letterSpacing: 1 }}>
         {getTime(tz)}
       </div>
-      <div style={{ fontSize: 13, color: 'var(--text2)', marginTop: 6, fontWeight: 600 }}>{getDate(tz)}</div>
+      <div style={{ fontSize: 13, color: 'var(--text2)', marginTop: 2, fontWeight: 600 }}>{getDate(tz)}</div>
     </div>
   )
 }
@@ -87,12 +87,12 @@ export default function DualClock() {
       </div>
 
       <div style={styles.clocks}>
-        <ClockCard name="Helena 🌺" city="Singapore / KL" tz="Asia/Singapore" avatar="👩🏻" color="var(--red)" shadowColor="var(--red-dark)" />
+        <ClockCard name="Helena 🌺" city="Singapore / KL" tz="Asia/Singapore" avatar="/helena2.png" color="var(--red)" shadowColor="var(--red-dark)" />
         <div style={styles.vs}>
           <span style={{ fontSize: 28 }}>❤️</span>
           <div className="pixel-title" style={{ fontSize: 8, color: 'var(--text2)', marginTop: 4 }}>VS</div>
         </div>
-        <ClockCard name="Sami ⚡" city={samiCity} tz={samiTz} avatar="👨🏻" color="var(--blue)" shadowColor="var(--blue-dark)" />
+        <ClockCard name="Sami ⚡" city={samiCity} tz={samiTz} avatar="/Sami2.png" color="var(--blue)" shadowColor="var(--blue-dark)" />
       </div>
 
       {editing && (

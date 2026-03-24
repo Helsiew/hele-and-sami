@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from '../supabaseClient'
 
-export default function SharedList({ title, table, doneField, placeholder, icon, typeOptions, accentColor, shadowColor, emptyMsg, emptyEmoji, doneLabel }) {
+export default function SharedList({ title, table, doneField, placeholder, icon, typeOptions, accentColor, shadowColor, emptyMsg, emptyEmoji, doneLabel, visibleLimit, noMeta }) {
   const [items, setItems] = useState([])
   const [text, setText] = useState('')
   const [addedBy, setAddedBy] = useState('Helena')
   const [itemType, setItemType] = useState(typeOptions ? typeOptions[0] : null)
+  const [showAll, setShowAll] = useState(false)
 
   useEffect(() => {
     supabase.from(table).select('*').order('created_at', { ascending: false })
@@ -36,13 +37,24 @@ export default function SharedList({ title, table, doneField, placeholder, icon,
 
   const getForLabel = (item) => {
     if (table === 'todos') {
-      return item.added_by === 'Helena' ? '👦 For Sami' : '👩 For Helena'
+      if (item.added_by === 'Sami') return '👦 For Sami'
+      if (item.added_by === 'Us') return '👫 For Us'
+      return '👩 For Helena'
     }
     return item.added_by === 'Helena' ? '👩 Helena' : '👦 Sami'
   }
 
   const pending = items.filter(i => !i[doneField])
   const done = items.filter(i => i[doneField])
+
+  const isTodos = table === 'todos'
+  const forSami   = isTodos ? pending.filter(i => i.added_by === 'Sami') : []
+  const forHelena = isTodos ? pending.filter(i => i.added_by === 'Helena') : []
+  const forUs     = isTodos ? pending.filter(i => i.added_by === 'Us') : []
+
+  const limit = visibleLimit && !showAll ? visibleLimit : pending.length
+  const visiblePending = pending.slice(0, limit)
+  const hiddenCount = pending.length - limit
 
   return (
     <div>
@@ -55,11 +67,13 @@ export default function SharedList({ title, table, doneField, placeholder, icon,
 
       <div style={styles.form}>
         <div style={styles.byRow}>
-          <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text2)' }}>Added by:</span>
-          {['Helena', 'Sami'].map(n => (
+          <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text2)' }}>
+            {isTodos ? 'This is for:' : 'Added by:'}
+          </span>
+          {(isTodos ? ['Helena', 'Sami', 'Us'] : ['Helena', 'Sami']).map(n => (
             <button key={n} onClick={() => setAddedBy(n)}
               style={{ ...styles.byBtn, background: addedBy === n ? accentColor : 'white', color: addedBy === n ? 'white' : 'var(--text2)', borderColor: addedBy === n ? shadowColor : '#ddd', boxShadow: addedBy === n ? `0 3px 0 ${shadowColor}` : '0 2px 0 #ccc' }}>
-              {n === 'Helena' ? '👩' : '👦'} {n}
+              {n === 'Helena' ? '👩' : n === 'Sami' ? '👦' : '👫'} {n}
             </button>
           ))}
         </div>
@@ -84,40 +98,77 @@ export default function SharedList({ title, table, doneField, placeholder, icon,
         </div>
       )}
 
-      <div style={styles.list}>
-        {pending.map(item => (
-          <ListItem key={item.id} item={item} doneField={doneField} onToggle={toggle} onDelete={remove} accentColor={accentColor} shadowColor={shadowColor} forLabel={getForLabel(item)} />
-        ))}
-        {done.length > 0 && (
-          <>
-            <div style={{ ...styles.doneHeader, color: shadowColor }}>
-              ── {doneLabel || 'DONE'} ({done.length}) ──
-            </div>
-            {done.map(item => (
-              <ListItem key={item.id} item={item} doneField={doneField} onToggle={toggle} onDelete={remove} accentColor={accentColor} shadowColor={shadowColor} forLabel={getForLabel(item)} done />
+      {isTodos ? (
+        <>
+          <div style={styles.threeColList}>
+            {[
+              { label: '👦 For Sami',   items: forSami },
+              { label: '👩 For Helena', items: forHelena },
+              { label: '👫 For Us',     items: forUs },
+            ].map(col => (
+              <div key={col.label}>
+                <div style={{ ...styles.colLabel, color: shadowColor }}>{col.label}</div>
+                {col.items.length === 0
+                  ? <p style={styles.colEmpty}>nothing yet 😴</p>
+                  : col.items.map(item => (
+                    <ListItem key={item.id} item={item} doneField={doneField} onToggle={toggle} onDelete={remove} accentColor={accentColor} shadowColor={shadowColor} forLabel={getForLabel(item)} noMeta={noMeta} />
+                  ))}
+              </div>
             ))}
-          </>
-        )}
-      </div>
+          </div>
+          {done.length > 0 && (
+            <>
+              <div style={{ ...styles.doneHeader, color: shadowColor }}>── {doneLabel || 'DONE'} ({done.length}) ──</div>
+              <div style={styles.list}>
+                {done.map(item => (
+                  <ListItem key={item.id} item={item} doneField={doneField} onToggle={toggle} onDelete={remove} accentColor={accentColor} shadowColor={shadowColor} forLabel={getForLabel(item)} noMeta={noMeta} done />
+                ))}
+              </div>
+            </>
+          )}
+        </>
+      ) : (
+        <div style={styles.list}>
+          {visiblePending.map(item => (
+            <ListItem key={item.id} item={item} doneField={doneField} onToggle={toggle} onDelete={remove} accentColor={accentColor} shadowColor={shadowColor} forLabel={getForLabel(item)} noMeta={noMeta} />
+          ))}
+          {hiddenCount > 0 && (
+            <button onClick={() => setShowAll(true)}
+              style={{ ...styles.showMoreBtn, borderColor: accentColor, color: accentColor }}>
+              ↓ show {hiddenCount} more
+            </button>
+          )}
+          {done.length > 0 && (
+            <>
+              <div style={{ ...styles.doneHeader, color: shadowColor }}>── {doneLabel || 'DONE'} ({done.length}) ──</div>
+              {done.map(item => (
+                <ListItem key={item.id} item={item} doneField={doneField} onToggle={toggle} onDelete={remove} accentColor={accentColor} shadowColor={shadowColor} forLabel={getForLabel(item)} noMeta={noMeta} done />
+              ))}
+            </>
+          )}
+        </div>
+      )}
     </div>
   )
 }
 
-function ListItem({ item, doneField, onToggle, onDelete, accentColor, shadowColor, forLabel, done }) {
+function ListItem({ item, doneField, onToggle, onDelete, accentColor, shadowColor, forLabel, done, noMeta }) {
   return (
     <div style={{ ...styles.item, opacity: done ? 0.55 : 1 }}>
       <button onClick={() => onToggle(item)}
         style={{ ...styles.check, borderColor: accentColor, background: item[doneField] ? accentColor : 'white', boxShadow: item[doneField] ? `0 2px 0 ${shadowColor}` : '0 2px 0 #ccc' }}>
-        {item[doneField] && <span style={{ color: 'white', fontSize: 12, fontWeight: 800 }}>✓</span>}
+        {item[doneField] && <span style={{ color: 'white', fontSize: 11, fontWeight: 800 }}>✓</span>}
       </button>
       <div style={styles.itemContent}>
-        <div style={{ fontSize: 15, fontWeight: 700, color: done ? '#aaa' : 'var(--text)', textDecoration: done ? 'line-through' : 'none', lineHeight: 1.4 }}>
+        <div style={{ fontSize: 13, fontWeight: 700, color: done ? '#aaa' : 'var(--text)', textDecoration: done ? 'line-through' : 'none', lineHeight: 1.3 }}>
           {item.title || item.text}
         </div>
-        <div style={styles.tags}>
-          <span style={{ ...styles.tag, background: `${accentColor}20`, color: shadowColor }}>{forLabel}</span>
-          {item.type && <span style={{ ...styles.tag, background: '#e8f5e8', color: 'var(--green-dark)' }}>🎬 {item.type}</span>}
-        </div>
+        {!noMeta && (
+          <div style={styles.tags}>
+            <span style={{ ...styles.tag, background: `${accentColor}20`, color: shadowColor }}>{forLabel}</span>
+            {item.type && <span style={{ ...styles.tag, background: '#e8f5e8', color: 'var(--green-dark)' }}>🎬 {item.type}</span>}
+          </div>
+        )}
       </div>
       <button style={styles.delBtn} onClick={() => onDelete(item.id)}>✕</button>
     </div>
@@ -125,20 +176,24 @@ function ListItem({ item, doneField, onToggle, onDelete, accentColor, shadowColo
 }
 
 const styles = {
-  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 },
+  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
   badge: { fontSize: 12, fontWeight: 800, padding: '3px 10px', borderRadius: 999 },
-  form: { background: '#f9f9f9', borderRadius: 12, border: '2px solid #eee', padding: 14, marginBottom: 12, display: 'flex', flexDirection: 'column', gap: 10 },
+  form: { background: '#f9f9f9', borderRadius: 12, border: '2px solid #eee', padding: 10, marginBottom: 10, display: 'flex', flexDirection: 'column', gap: 8 },
   byRow: { display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' },
-  byBtn: { fontSize: 13, fontWeight: 700, padding: '6px 12px', borderRadius: 8, border: '2px solid', cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s' },
+  byBtn: { fontSize: 13, fontWeight: 700, padding: '5px 10px', borderRadius: 8, border: '2px solid', cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s' },
   inputRow: { display: 'flex', gap: 8 },
-  addBtn: { padding: '10px 16px', border: '2px solid', borderRadius: 8, color: 'white', fontWeight: 800, fontSize: 13, cursor: 'pointer', fontFamily: "'Nunito', sans-serif", whiteSpace: 'nowrap' },
-  list: { display: 'flex', flexDirection: 'column', gap: 8 },
-  item: { display: 'flex', alignItems: 'center', gap: 10, background: 'white', borderRadius: 10, border: '2px solid #eee', padding: '10px 12px', transition: 'opacity 0.2s' },
-  check: { width: 24, height: 24, borderRadius: 6, border: '2px solid', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0, transition: 'all 0.15s' },
+  addBtn: { padding: '8px 14px', border: '2px solid', borderRadius: 8, color: 'white', fontWeight: 800, fontSize: 13, cursor: 'pointer', fontFamily: "'Nunito', sans-serif", whiteSpace: 'nowrap' },
+  list: { display: 'flex', flexDirection: 'column', gap: 5 },
+  threeColList: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginBottom: 6 },
+  colLabel: { fontFamily: "'Press Start 2P', monospace", fontSize: 7, fontWeight: 800, marginBottom: 6, paddingBottom: 4, borderBottom: '2px dashed #eee' },
+  colEmpty: { fontSize: 11, color: '#bbb', fontWeight: 600, textAlign: 'center', padding: '6px 0', margin: 0 },
+  item: { display: 'flex', alignItems: 'center', gap: 8, background: 'white', borderRadius: 8, border: '2px solid #eee', padding: '6px 10px', transition: 'opacity 0.2s', marginBottom: 5 },
+  check: { width: 20, height: 20, borderRadius: 5, border: '2px solid', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0, transition: 'all 0.15s' },
   itemContent: { flex: 1, minWidth: 0 },
-  tags: { display: 'flex', gap: 6, marginTop: 4, flexWrap: 'wrap' },
-  tag: { fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 999 },
-  delBtn: { background: 'none', border: 'none', cursor: 'pointer', color: '#ccc', fontSize: 14, flexShrink: 0 },
-  doneHeader: { fontFamily: "'Press Start 2P', monospace", fontSize: 7, textAlign: 'center', margin: '8px 0 6px' },
-  empty: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, padding: '12px 0' }
+  tags: { display: 'flex', gap: 5, marginTop: 2, flexWrap: 'wrap' },
+  tag: { fontSize: 10, fontWeight: 700, padding: '1px 6px', borderRadius: 999 },
+  delBtn: { background: 'none', border: 'none', cursor: 'pointer', color: '#ccc', fontSize: 13, flexShrink: 0 },
+  doneHeader: { fontFamily: "'Press Start 2P', monospace", fontSize: 7, textAlign: 'center', margin: '8px 0 5px' },
+  empty: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, padding: '10px 0' },
+  showMoreBtn: { background: 'white', border: '2px solid', borderRadius: 8, padding: '6px 12px', fontSize: 12, fontWeight: 700, cursor: 'pointer', textAlign: 'center', fontFamily: "'Nunito', sans-serif" },
 }

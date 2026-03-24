@@ -110,37 +110,35 @@ export default function Countdowns() {
 
         {hero ? (
           <div style={styles.heroCard}>
-            <div style={styles.heroEmoji}>{hero.emoji}</div>
-            <div style={styles.heroLabel}>{hero.label}</div>
-
             {done ? (
               <div style={styles.heroDone}>🎉 TODAY IS THE DAY!!</div>
             ) : (
               <>
-                <div style={styles.heroDays}>
+                {/* Centered: emoji · label · days all on one line */}
+                <div style={styles.heroCenter}>
+                  <span style={styles.heroEmoji}>{hero.emoji}</span>
+                  <span style={styles.heroLabel}>{hero.label}</span>
+                  <span style={styles.heroDot}>·</span>
                   <span style={styles.heroDaysNum}>{days}</span>
-                  <span style={styles.heroDaysWord}>days to go</span>
+                  <span style={styles.heroDaysWord}>days</span>
                 </div>
 
+                {/* Progress bar — avatars sit ON the bar itself */}
                 <div style={styles.trackWrap}>
                   <div style={styles.track}>
                     <div style={{ ...styles.trackFill, width: `${progress}%` }} />
                     <div style={{ ...styles.avatar, left: `${progress / 2}%` }}>
-                      <img src="/helena.png" alt="Helena" style={styles.avatarImg} />
-                      <div style={styles.avatarName}>Helena</div>
+                      <img src="/helena2.png" alt="Helena" style={styles.avatarImg} />
                     </div>
-                    <div style={{ ...styles.avatar, right: `${progress / 2}%` }}>
-                      <img src="/sami.png" alt="Sami" style={styles.avatarImg} />
-                      <div style={styles.avatarName}>Sami</div>
+                    <div style={{ ...styles.avatar, left: `${100 - progress / 2}%` }}>
+                      <img src="/Sami2.png" alt="Sami" style={styles.avatarImg} />
                     </div>
                   </div>
                 </div>
 
+                {/* Bottom: % there + end date only */}
                 <div style={styles.progressLabels}>
-                  <span style={styles.progressDate}>
-                    {new Date(hero.start).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
-                  </span>
-                  <span style={styles.progressPct}>{Math.round(progress)}% of the wait is over</span>
+                  <span style={styles.progressPct}>{Math.round(progress)}% there</span>
                   <span style={styles.progressDate}>
                     {new Date(hero.end).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
                   </span>
@@ -251,19 +249,20 @@ const styles = {
   heroTop: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
   heroCard: {
     background: 'linear-gradient(135deg, #fff5f5, #fff9f0)',
-    borderRadius: 20, border: '3px solid var(--red-dark)',
+    borderRadius: 16, border: '3px solid var(--red-dark)',
     boxShadow: '0 6px 0 var(--red-dark)',
-    padding: '24px 20px', textAlign: 'center'
+    padding: '14px 16px'
   },
-  heroEmoji: { fontSize: 44, marginBottom: 4, animation: 'float 3s ease-in-out infinite' },
-  heroLabel: { fontSize: 16, fontWeight: 800, color: 'var(--text)', marginBottom: 12 },
-  heroDays: { display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: 8, marginBottom: 20 },
-  heroDaysNum: { fontFamily: "'Press Start 2P', monospace", fontSize: 44, color: 'var(--red)', lineHeight: 1 },
-  heroDaysWord: { fontSize: 16, fontWeight: 700, color: 'var(--text2)' },
-  heroDone: { fontSize: 24, fontWeight: 800, color: 'var(--green)', padding: '12px 0' },
-  trackWrap: { padding: '40px 16px 16px', position: 'relative' },
+  heroCenter: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 12, textAlign: 'center' },
+  heroEmoji: { fontSize: 22 },
+  heroLabel: { fontSize: 14, fontWeight: 800, color: 'var(--text)', lineHeight: 1.3 },
+  heroDot: { fontSize: 14, color: '#ccc', fontWeight: 400 },
+  heroDaysNum: { fontFamily: "'Press Start 2P', monospace", fontSize: 24, color: 'var(--red)', lineHeight: 1 },
+  heroDaysWord: { fontSize: 12, fontWeight: 700, color: 'var(--text2)' },
+  heroDone: { fontSize: 20, fontWeight: 800, color: 'var(--green)', textAlign: 'center', padding: '8px 0' },
+  trackWrap: { padding: '0 14px 8px', position: 'relative' },
   track: {
-    height: 16, background: '#f0e6ff',
+    height: 12, background: '#f0e6ff',
     borderRadius: 999, border: '2px solid #ddd',
     position: 'relative', overflow: 'visible'
   },
@@ -272,19 +271,18 @@ const styles = {
     borderRadius: 999, transition: 'width 1s ease'
   },
   avatar: {
-    position: 'absolute', top: -44,
-    display: 'flex', flexDirection: 'column', alignItems: 'center',
-    transform: 'translateX(-50%)'
+    position: 'absolute', top: '50%',
+    transform: 'translate(-50%, -50%)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
   },
   avatarImg: {
-    width: 32, height: 32, borderRadius: '50%',
+    width: 28, height: 28, borderRadius: '50%',
     objectFit: 'cover', border: '2px solid white',
-    boxShadow: '0 2px 6px rgba(0,0,0,0.2)'
+    boxShadow: '0 2px 6px rgba(0,0,0,0.25)'
   },
-  avatarName: { fontSize: 10, fontWeight: 700, color: 'var(--text2)', marginTop: 3, whiteSpace: 'nowrap' },
-  progressLabels: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 8, paddingTop: 8 },
-  progressDate: { fontSize: 12, fontWeight: 700, color: 'var(--text2)' },
-  progressPct: { fontSize: 13, fontWeight: 700, color: 'var(--red)', textAlign: 'center' },
+  progressLabels: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 4, paddingTop: 2 },
+  progressDate: { fontSize: 11, fontWeight: 700, color: 'var(--text2)' },
+  progressPct: { fontSize: 11, fontWeight: 700, color: 'var(--red)' },
   heroEmpty: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, padding: '24px 0' },
   modalBg: { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 },
   modal: { background: 'var(--white)', borderRadius: 16, border: '3px solid var(--red-dark)', boxShadow: '0 6px 0 var(--red-dark)', padding: '28px 24px', width: 360, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' },
