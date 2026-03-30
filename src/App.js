@@ -137,7 +137,7 @@ const styles = {
     opacity: 0.4,
     zIndex: 0,
   },
-  titleRow: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '12px 16px', position: 'relative', zIndex: 1 },
+  titleRow: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0, padding: '12px 16px', position: 'relative', zIndex: 1 },
   title: { fontSize: 'clamp(15px, 3.5vw, 28px)', fontWeight: 900, color: 'var(--red)', WebkitTextStroke: '0.5px white', textShadow: '-1px -1px 0 #9B1A14, 1px -1px 0 #9B1A14, -1px 1px 0 #9B1A14, 1px 1px 0 #9B1A14, 3px 3px 0 #6b0000', marginBottom: 8, whiteSpace: 'nowrap', letterSpacing: '0.15em' },
   subtitle: { fontSize: 13, color: 'white', fontWeight: 700, display: 'inline-block', background: 'var(--red)', border: '2.5px solid white', borderRadius: 999, padding: '4px 14px', whiteSpace: 'nowrap' },
   pixelDivider: { display: 'flex', height: 16, overflow: 'hidden' },
