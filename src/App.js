@@ -12,14 +12,29 @@ export default function App() {
 
   return (
     <div style={styles.app}>
-      {/* Sky background clouds */}
+      {/* Scattered clouds throughout page */}
       <div style={styles.cloudsBg} aria-hidden>
         {[
-          { top: '3%', left: '8%', scale: 1 },
-          { top: '7%', left: '55%', scale: 0.8 },
-          { top: '1%', left: '35%', scale: 0.6 },
+          { top: '2%',  left: '5%',  scale: 1.1 },
+          { top: '4%',  left: '60%', scale: 0.8 },
+          { top: '1%',  left: '32%', scale: 0.6 },
+          { top: '8%',  left: '80%', scale: 0.9 },
+          { top: '13%', left: '15%', scale: 0.7 },
+          { top: '18%', left: '70%', scale: 1.0 },
+          { top: '24%', left: '40%', scale: 0.65 },
+          { top: '30%', left: '2%',  scale: 0.8 },
+          { top: '36%', left: '55%', scale: 1.1 },
+          { top: '42%', left: '20%', scale: 0.75 },
+          { top: '50%', left: '75%', scale: 0.6 },
+          { top: '57%', left: '8%',  scale: 0.9 },
+          { top: '63%', left: '48%', scale: 0.7 },
+          { top: '70%', left: '85%', scale: 1.0 },
+          { top: '77%', left: '25%', scale: 0.65 },
+          { top: '84%', left: '62%', scale: 0.8 },
+          { top: '91%', left: '10%', scale: 0.7 },
+          { top: '95%', left: '45%', scale: 0.9 },
         ].map((c, i) => (
-          <svg key={i} style={{ position: 'absolute', top: c.top, left: c.left, transform: `scale(${c.scale})`, opacity: 0.7 }} width="100" height="50" viewBox="0 0 100 50">
+          <svg key={i} style={{ position: 'absolute', top: c.top, left: c.left, transform: `scale(${c.scale})`, opacity: 0.55, pointerEvents: 'none' }} width="100" height="50" viewBox="0 0 100 50">
             <ellipse cx="50" cy="36" rx="44" ry="14" fill="white" />
             <ellipse cx="35" cy="26" rx="22" ry="17" fill="white" />
             <ellipse cx="65" cy="24" rx="20" ry="16" fill="white" />
@@ -37,10 +52,10 @@ export default function App() {
 <img src="/sami.png" alt="Sami" style={{ ...styles.headerAvatar, animationDelay: '0.3s' }} />
         </div>
 
-        {/* Pixel divider */}
+        {/* Pixel divider — black */}
         <div style={styles.pixelDivider}>
           {Array.from({ length: 20 }).map((_, i) => (
-            <div key={i} style={{ ...styles.pixelBlock, background: i % 2 === 0 ? 'var(--yellow)' : 'var(--yellow-dark)' }} />
+            <div key={i} style={{ ...styles.pixelBlock, background: i % 2 === 0 ? '#222' : '#000' }} />
           ))}
         </div>
       </header>
@@ -139,10 +154,10 @@ export default function App() {
 
 const styles = {
   app: { maxWidth: 900, margin: '0 auto', padding: '0 16px', position: 'relative' },
-  cloudsBg: { position: 'fixed', top: 0, left: 0, right: 0, height: 120, pointerEvents: 'none', zIndex: 0 },
-  header: { textAlign: 'center', padding: '32px 0 20px', position: 'relative', zIndex: 1 },
-  titleRow: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, marginBottom: 16 },
-  title: { fontSize: 'clamp(12px, 3vw, 20px)', color: 'var(--red)', textShadow: '3px 3px 0 var(--red-dark)', marginBottom: 6 },
+  cloudsBg: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, pointerEvents: 'none', zIndex: 0 },
+  header: { textAlign: 'center', padding: '24px 0 0', position: 'sticky', top: 0, zIndex: 50, background: '#87CEEB' },
+  titleRow: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, marginBottom: 12 },
+  title: { fontSize: 'clamp(16px, 4vw, 26px)', fontWeight: 900, color: 'var(--red)', textShadow: '3px 3px 0 var(--red-dark)', marginBottom: 6 },
   subtitle: { fontSize: 16, color: 'var(--text2)', fontWeight: 700 },
   pixelDivider: { display: 'flex', height: 16, overflow: 'hidden' },
   pixelBlock: { flex: 1, minWidth: 0 },
