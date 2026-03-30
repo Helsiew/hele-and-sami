@@ -192,6 +192,20 @@ body {
   50% { transform: translateY(-8px); }
 }
 
+/* Header avatars — smaller on mobile */
+.header-avatar {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+}
+
+@media (max-width: 480px) {
+  .header-avatar {
+    width: 64px;
+    height: 64px;
+  }
+}
+
 /* Ground strip */
 .ground {
   height: 32px;

@@ -15,12 +15,12 @@ export default function App() {
       <header style={styles.header}>
         <div style={styles.headerBg} aria-hidden />
         <div style={styles.titleRow}>
-          <img src="/helena.png" alt="Helena" style={{ ...styles.headerAvatar, animationDelay: '0s' }} />
+          <img src="/helena.png" alt="Helena" className="header-avatar" style={{ animation: 'bounce 1s ease-in-out infinite', animationDelay: '0s' }} />
           <div style={{ textAlign: 'center' }}>
             <h1 className="pixel-title" style={styles.title}>HELENA & SAMI</h1>
             <p style={styles.subtitle}>⭐ our little corner of the internet ⭐</p>
           </div>
-          <img src="/sami.png" alt="Sami" style={{ ...styles.headerAvatar, animationDelay: '0.3s' }} />
+          <img src="/sami.png" alt="Sami" className="header-avatar" style={{ animation: 'bounce 1s ease-in-out infinite', animationDelay: '0.3s' }} />
         </div>
       </header>
 
