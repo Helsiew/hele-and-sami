@@ -134,7 +134,7 @@ const styles = {
     backgroundSize: 'cover',
     backgroundPosition: 'center bottom',
     backgroundRepeat: 'no-repeat',
-    opacity: 0.6,
+    opacity: 0.8,
     zIndex: 0,
   },
   titleRow: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, padding: '12px 16px', position: 'relative', zIndex: 1 },
