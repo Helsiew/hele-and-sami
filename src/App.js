@@ -13,6 +13,7 @@ export default function App() {
   return (
     <div style={styles.app}>
       <header style={styles.header}>
+        <div style={styles.headerBg} aria-hidden />
         <div style={styles.titleRow}>
           <img src="/helena.png" alt="Helena" style={{ ...styles.headerAvatar, animationDelay: '0s' }} />
           <div>
@@ -123,12 +124,20 @@ const styles = {
     position: 'sticky',
     top: 0,
     zIndex: 50,
+    background: '#87CEEB',
+    overflow: 'hidden',
+  },
+  headerBg: {
+    position: 'absolute',
+    inset: 0,
     backgroundImage: 'url(/background.png)',
     backgroundSize: 'cover',
     backgroundPosition: 'center bottom',
     backgroundRepeat: 'no-repeat',
+    opacity: 0.6,
+    zIndex: 0,
   },
-  titleRow: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, padding: '12px 16px' },
+  titleRow: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, padding: '12px 16px', position: 'relative', zIndex: 1 },
   title: { fontSize: 'clamp(16px, 4vw, 26px)', fontWeight: 900, color: 'var(--red)', textShadow: '3px 3px 0 var(--red-dark)', marginBottom: 6 },
   subtitle: { fontSize: 16, color: '#111', fontWeight: 700 },
   pixelDivider: { display: 'flex', height: 16, overflow: 'hidden' },
