@@ -1,6 +1,81 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from '../supabaseClient'
 
+// Lat/lng for every timezone option — pins auto-move when location updates
+const CITY_COORDS = {
+  'Asia/Singapore':      { lat: 1.35,   lng: 103.82 },
+  'Europe/Madrid':       { lat: 40.42,  lng: -3.70  },
+  'Europe/Helsinki':     { lat: 60.17,  lng: 24.94  },
+  'Europe/London':       { lat: 51.51,  lng: -0.13  },
+  'Europe/Berlin':       { lat: 52.52,  lng: 13.40  },
+  'Europe/Paris':        { lat: 48.85,  lng: 2.35   },
+  'Europe/Rome':         { lat: 41.90,  lng: 12.50  },
+  'Europe/Amsterdam':    { lat: 52.37,  lng: 4.90   },
+  'Europe/Lisbon':       { lat: 38.72,  lng: -9.14  },
+  'Asia/Dubai':          { lat: 25.20,  lng: 55.27  },
+  'Asia/Tokyo':          { lat: 35.68,  lng: 139.69 },
+  'Australia/Sydney':    { lat: -33.87, lng: 151.21 },
+  'America/New_York':    { lat: 40.71,  lng: -74.01 },
+  'America/Los_Angeles': { lat: 34.05,  lng: -118.24 },
+}
+
+// Equirectangular projection with y-calibration for this specific worldmap.png.
+// The map's tropical/southern regions sit lower than a pure formula predicts,
+// so we apply a progressive downward shift below y=25%.
+// Calibrated so Singapore (formula 49.3%) → lands at ~65% on the image.
+function coordToPercent(lat, lng) {
+  const x = (lng + 180) / 360 * 100
+  const yRaw = (90 - lat) / 180 * 100
+  const y = Math.min(97, yRaw + Math.max(0, yRaw - 25) * 0.65)
+  return { x, y }
+}
+
+function MapPin({ tz, avatar, color }) {
+  const coords = CITY_COORDS[tz]
+  if (!coords) return null
+  const { x, y } = coordToPercent(coords.lat, coords.lng)
+  return (
+    <div style={{
+      position: 'absolute',
+      left: `${x}%`,
+      top: `${y}%`,
+      transform: 'translate(-50%, -100%)',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      pointerEvents: 'none',
+      zIndex: 2,
+      filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.6))',
+    }}>
+      <img src={avatar} alt="" style={{
+        width: 28, height: 28,
+        borderRadius: '50%',
+        border: `2.5px solid ${color}`,
+        objectFit: 'cover',
+        background: 'white',
+        display: 'block',
+      }} />
+      <div style={{
+        width: 0, height: 0,
+        borderLeft: '5px solid transparent',
+        borderRight: '5px solid transparent',
+        borderTop: `7px solid ${color}`,
+        marginTop: -1,
+      }} />
+    </div>
+  )
+}
+
+function WorldMap({ helenaTz, samiTz }) {
+  return (
+    <div style={{ position: 'relative', width: '100%', borderRadius: 10, overflow: 'hidden', marginBottom: 16 }}>
+      <img src="/worldmap.png" alt="World Map" style={{ width: '100%', display: 'block' }} />
+      <MapPin tz={helenaTz} avatar="/helena2.png" color="var(--red-dark)" />
+      <MapPin tz={samiTz} avatar="/Sami2.png" color="var(--blue-dark)" />
+    </div>
+  )
+}
+
 const TIMEZONES = [
   { label: 'Singapore / KL', value: 'Asia/Singapore' },
   { label: 'Spain (Madrid)', value: 'Europe/Madrid' },
@@ -33,13 +108,15 @@ function ClockCard({ name, city, tz, avatar, color, shadowColor }) {
   }, [])
   return (
     <div style={{ ...styles.clock, borderColor: shadowColor, boxShadow: `0 5px 0 ${shadowColor}` }}>
-      <img src={avatar} alt={name} style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: '50%', border: '3px solid #eee', marginBottom: 4 }} />
-      <div style={{ fontSize: 13, fontWeight: 800, color: shadowColor, marginBottom: 2 }}>{name}</div>
-      <div style={{ fontSize: 13, color: 'var(--text2)', marginBottom: 6 }}>📍 {city}</div>
-      <div style={{ fontSize: 32, fontWeight: 800, color, fontVariantNumeric: 'tabular-nums', letterSpacing: 1 }}>
-        {getTime(tz)}
+      <img src={avatar} alt={name} style={{ width: 56, height: 56, objectFit: 'cover', borderRadius: '50%', border: `3px solid ${shadowColor}`, flexShrink: 0 }} />
+      <div style={{ textAlign: 'left' }}>
+        <div style={{ fontSize: 13, fontWeight: 800, color: shadowColor, marginBottom: 1 }}>{name}</div>
+        <div style={{ fontSize: 12, color: 'var(--text2)', marginBottom: 4 }}>📍 {city}</div>
+        <div style={{ fontSize: 28, fontWeight: 800, color, fontVariantNumeric: 'tabular-nums', letterSpacing: 1, lineHeight: 1 }}>
+          {getTime(tz)}
+        </div>
+        <div style={{ fontSize: 11, color: 'var(--text2)', marginTop: 2, fontWeight: 600 }}>{getDate(tz)}</div>
       </div>
-      <div style={{ fontSize: 13, color: 'var(--text2)', marginTop: 2, fontWeight: 600 }}>{getDate(tz)}</div>
     </div>
   )
 }
@@ -116,6 +193,8 @@ export default function DualClock() {
         </div>
       </div>
 
+      <WorldMap helenaTz={helenaTz} samiTz={samiTz} />
+
       <div style={styles.clocks}>
         <ClockCard name="Helena 🌺" city={helenaCity} tz={helenaTz} avatar="/helena2.png" color="var(--red)" shadowColor="var(--red-dark)" />
         <ClockCard name="Sami ⚡" city={samiCity} tz={samiTz} avatar="/Sami2.png" color="var(--blue)" shadowColor="var(--blue-dark)" />
@@ -147,10 +226,11 @@ export default function DualClock() {
 
 const styles = {
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
-  clocks: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, flexWrap: 'wrap' },
+  clocks: { display: 'flex', gap: 12, flexWrap: 'wrap' },
   clock: {
     background: 'var(--white)', borderRadius: 16, border: '3px solid',
-    padding: '12px 16px', textAlign: 'center', minWidth: 140, flex: 1, maxWidth: 200
+    padding: '12px 16px', display: 'flex', flexDirection: 'row',
+    alignItems: 'center', gap: 12, flex: 1, minWidth: 200,
   },
   modalBg: {
     position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)',
