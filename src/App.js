@@ -16,7 +16,7 @@ export default function App() {
         <div style={styles.headerBg} aria-hidden />
         <div style={styles.titleRow}>
           <img src="/helena.png" alt="Helena" style={{ ...styles.headerAvatar, animationDelay: '0s' }} />
-          <div>
+          <div style={{ textAlign: 'center' }}>
             <h1 className="pixel-title" style={styles.title}>HELENA & SAMI</h1>
             <p style={styles.subtitle}>⭐ our little corner of the internet ⭐</p>
           </div>
@@ -138,8 +138,8 @@ const styles = {
     zIndex: 0,
   },
   titleRow: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, padding: '12px 16px', position: 'relative', zIndex: 1 },
-  title: { fontSize: 'clamp(16px, 4vw, 26px)', fontWeight: 900, color: 'var(--red)', textShadow: '3px 3px 0 var(--red-dark)', marginBottom: 6 },
-  subtitle: { fontSize: 16, color: '#111', fontWeight: 700 },
+  title: { fontSize: 'clamp(14px, 3.5vw, 26px)', fontWeight: 900, color: 'var(--red)', WebkitTextStroke: '1.5px white', textShadow: '3px 3px 0 var(--red-dark)', marginBottom: 8, whiteSpace: 'nowrap' },
+  subtitle: { fontSize: 13, color: '#111', fontWeight: 700, display: 'inline-block', background: 'white', border: '2.5px solid var(--red)', borderRadius: 999, padding: '4px 14px', whiteSpace: 'nowrap' },
   pixelDivider: { display: 'flex', height: 16, overflow: 'hidden' },
   pixelBlock: { flex: 1, minWidth: 0 },
   main: { display: 'flex', flexDirection: 'column', gap: 16, paddingBottom: 8, position: 'relative', zIndex: 1 },
