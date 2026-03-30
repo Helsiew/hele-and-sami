@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { supabase } from '../supabaseClient'
 
 const TIMEZONES = [
+  { label: 'Singapore / KL', value: 'Asia/Singapore' },
   { label: 'Spain (Madrid)', value: 'Europe/Madrid' },
   { label: 'Finland (Helsinki)', value: 'Europe/Helsinki' },
   { label: 'UK (London)', value: 'Europe/London' },
@@ -32,7 +33,7 @@ function ClockCard({ name, city, tz, avatar, color, shadowColor }) {
   }, [])
   return (
     <div style={{ ...styles.clock, borderColor: shadowColor, boxShadow: `0 5px 0 ${shadowColor}` }}>
-      <img src={avatar} alt={name} style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: '50%', border: '3px solid #eee', marginBottom: 4 }} />
+      <img src={avatar} alt={name} style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: '50%', border: '3px solid #eee', marginBottom: 4 }} />
       <div style={{ fontSize: 13, fontWeight: 800, color: shadowColor, marginBottom: 2 }}>{name}</div>
       <div style={{ fontSize: 13, color: 'var(--text2)', marginBottom: 6 }}>📍 {city}</div>
       <div style={{ fontSize: 32, fontWeight: 800, color, fontVariantNumeric: 'tabular-nums', letterSpacing: 1 }}>
@@ -46,52 +47,77 @@ function ClockCard({ name, city, tz, avatar, color, shadowColor }) {
 export default function DualClock() {
   const [samiTz, setSamiTz] = useState('Europe/Madrid')
   const [samiCity, setSamiCity] = useState('Spain')
+  const [helenaTz, setHelenaTz] = useState('Asia/Singapore')
+  const [helenaCity, setHelenaCity] = useState('Singapore / KL')
   const [editing, setEditing] = useState(false)
-  const [tempTz, setTempTz] = useState('Europe/Madrid')
+  const [who, setWho] = useState('helena')
+  const [tempTz, setTempTz] = useState('Asia/Singapore')
 
   useEffect(() => {
     supabase.from('settings').select('*').then(({ data }) => {
       if (data) {
-        const tz = data.find(r => r.key === 'sami_timezone')
-        const city = data.find(r => r.key === 'sami_city')
-        if (tz) { setSamiTz(tz.value); setTempTz(tz.value) }
-        if (city) setSamiCity(city.value)
+        const samiTzRow = data.find(r => r.key === 'sami_timezone')
+        const samiCityRow = data.find(r => r.key === 'sami_city')
+        const helenaTzRow = data.find(r => r.key === 'helena_timezone')
+        const helenaCityRow = data.find(r => r.key === 'helena_city')
+        if (samiTzRow) setSamiTz(samiTzRow.value)
+        if (samiCityRow) setSamiCity(samiCityRow.value)
+        if (helenaTzRow) { setHelenaTz(helenaTzRow.value); }
+        if (helenaCityRow) setHelenaCity(helenaCityRow.value)
       }
     })
     const ch = supabase.channel('settings-clock')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'settings' }, p => {
-        if (p.new?.key === 'sami_timezone') { setSamiTz(p.new.value); setTempTz(p.new.value) }
+        if (p.new?.key === 'sami_timezone') setSamiTz(p.new.value)
         if (p.new?.key === 'sami_city') setSamiCity(p.new.value)
+        if (p.new?.key === 'helena_timezone') setHelenaTz(p.new.value)
+        if (p.new?.key === 'helena_city') setHelenaCity(p.new.value)
       }).subscribe()
     return () => supabase.removeChannel(ch)
   }, [])
 
+  const openEdit = (person) => {
+    setWho(person)
+    setTempTz(person === 'helena' ? helenaTz : samiTz)
+    setEditing(true)
+  }
+
   const save = async () => {
     const label = TIMEZONES.find(t => t.value === tempTz)?.label || tempTz
-    await supabase.from('settings').upsert([
-      { key: 'sami_timezone', value: tempTz },
-      { key: 'sami_city', value: label }
-    ])
-    setSamiTz(tempTz); setSamiCity(label); setEditing(false)
+    if (who === 'helena') {
+      await supabase.from('settings').upsert([
+        { key: 'helena_timezone', value: tempTz },
+        { key: 'helena_city', value: label }
+      ])
+      setHelenaTz(tempTz); setHelenaCity(label)
+    } else {
+      await supabase.from('settings').upsert([
+        { key: 'sami_timezone', value: tempTz },
+        { key: 'sami_city', value: label }
+      ])
+      setSamiTz(tempTz); setSamiCity(label)
+    }
+    setEditing(false)
   }
 
   return (
     <div>
       <div style={styles.header}>
-        <div className="section-label" style={{ color: 'var(--blue-dark)', marginBottom: 0 }}>
-          🌍 WORLD CLOCK
+        <div className="section-label" style={{ color: 'var(--blue-dark)', marginBottom: 0, fontSize: 11 }}>
+          🌍 US AROUND THE WORLD
         </div>
-        <button className="btn btn-ghost" style={{ fontSize: 13 }} onClick={() => setEditing(true)}>
-          ✏️ Update Sami's city
-        </button>
+        <div style={{ display: 'flex', gap: 6 }}>
+          <button className="btn btn-blue" style={{ fontSize: 10, padding: '4px 8px' }} onClick={() => openEdit('helena')}>
+            Edit Hele's
+          </button>
+          <button className="btn btn-blue" style={{ fontSize: 10, padding: '4px 8px' }} onClick={() => openEdit('sami')}>
+            Edit Sami's
+          </button>
+        </div>
       </div>
 
       <div style={styles.clocks}>
-        <ClockCard name="Helena 🌺" city="Singapore / KL" tz="Asia/Singapore" avatar="/helena2.png" color="var(--red)" shadowColor="var(--red-dark)" />
-        <div style={styles.vs}>
-          <span style={{ fontSize: 28 }}>❤️</span>
-          <div className="pixel-title" style={{ fontSize: 8, color: 'var(--text2)', marginTop: 4 }}>VS</div>
-        </div>
+        <ClockCard name="Helena 🌺" city={helenaCity} tz={helenaTz} avatar="/helena2.png" color="var(--red)" shadowColor="var(--red-dark)" />
         <ClockCard name="Sami ⚡" city={samiCity} tz={samiTz} avatar="/Sami2.png" color="var(--blue)" shadowColor="var(--blue-dark)" />
       </div>
 
@@ -99,8 +125,12 @@ export default function DualClock() {
         <div style={styles.modalBg}>
           <div style={styles.modal}>
             <div style={{ fontSize: 36, marginBottom: 8 }}>📍</div>
-            <div className="pixel-title" style={{ fontSize: 10, color: 'var(--blue)', marginBottom: 6 }}>UPDATE SAMI'S LOCATION</div>
-            <p style={{ fontSize: 14, color: 'var(--text2)', marginBottom: 14, fontWeight: 600 }}>Where's he wandered off to now? 🗺️</p>
+            <div className="pixel-title" style={{ fontSize: 10, color: 'var(--blue)', marginBottom: 6 }}>
+              {who === 'helena' ? "UPDATE HELENA'S LOCATION" : "UPDATE SAMI'S LOCATION"}
+            </div>
+            <p style={{ fontSize: 14, color: 'var(--text2)', marginBottom: 14, fontWeight: 600 }}>
+              {who === 'helena' ? 'Where are you? 🌺' : "Where's he wandered off to? 🗺️"}
+            </p>
             <select className="field" style={{ marginBottom: 16 }} value={tempTz} onChange={e => setTempTz(e.target.value)}>
               {TIMEZONES.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
             </select>
@@ -120,9 +150,8 @@ const styles = {
   clocks: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16, flexWrap: 'wrap' },
   clock: {
     background: 'var(--white)', borderRadius: 16, border: '3px solid',
-    padding: '20px 24px', textAlign: 'center', minWidth: 170, flex: 1, maxWidth: 240
+    padding: '12px 16px', textAlign: 'center', minWidth: 140, flex: 1, maxWidth: 200
   },
-  vs: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 },
   modalBg: {
     position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)',
     display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100

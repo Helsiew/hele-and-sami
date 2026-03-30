@@ -2,21 +2,21 @@ import React, { useState, useEffect } from 'react'
 import { supabase } from '../supabaseClient'
 
 const MOODS = [
-  { type: 'thinking of u',   emoji: '❤️',  label: 'thinking of u' },
-  { type: 'missing u',       emoji: '😭',  label: 'missing u' },
-  { type: "i'm mad at u",    emoji: '😤',  label: "i'm mad at u" },
-  { type: 'u make me happy', emoji: '😊',  label: 'u make me happy' },
-  { type: 'need a hug',      emoji: '🤗',  label: 'need a hug' },
-  { type: 'u made me smile', emoji: '🌟',  label: 'u made me smile' },
+  { type: 'thinking of u',       emoji: '❤️',  label: 'thinking of u' },
+  { type: 'u pissing me off bij', emoji: '😤',  label: 'u pissing me off bij' },
+  { type: 'i miss u',            emoji: '🥺',  label: 'i miss u' },
+  { type: 'big hug pls',         emoji: '🤗',  label: 'big hug pls' },
+  { type: 'kisses',              emoji: '💋',  label: '💋💋💋💋' },
+  { type: 'im sorry',            emoji: '☹️',  label: 'im sorry' },
 ]
 
 const MOOD_REPLIES = {
-  'thinking of u':   ["Sent. Sappily and without shame. 🥹", "They're blushing. Probably. 🌸", "Cute. Disgustingly cute. 💕"],
-  'missing u':       ["Ache dispatched. Handle with care. 💔", "So needy. So adorably needy. 😭", "Miss them more, coward. 🌊"],
-  "i'm mad at u":    ["Uh oh. Drama served. 👀", "They should be nervous. Good. 😤", "Sent. Best of luck to them. 😈"],
-  'u make me happy': ["Softest thing ever. Sent. 🥺", "They'll screenshot this forever. 📸", "Ugh. You two are a lot. 💛"],
-  'need a hug':      ["Virtual hug en route. ETA: unknown. 🤗", "Hug request dispatched. 🫂", "Aww. They better deliver."],
-  'u made me smile': ["Good vibes sent. 🌟", "They'll grin like an idiot. Good. 😁", "Smile tax: one hug. 😌"],
+  'thinking of u':        ["Sent. Sappily and without shame. 🥹", "They're blushing. Probably. 🌸", "Cute. Disgustingly cute. 💕"],
+  'u pissing me off bij': ["Uh oh. Drama served. 👀", "They should be nervous. Good. 😤", "Sent. Best of luck to them. 😈"],
+  'i miss u':             ["Ache dispatched. Handle with care. 💔", "So needy. So adorably needy. 😭", "Miss them more, coward. 🌊"],
+  'big hug pls':          ["Virtual hug en route. ETA: unknown. 🤗", "Hug request dispatched. 🫂", "Aww. They better deliver."],
+  'kisses':               ["Softest thing ever. Sent. 🥺", "They'll screenshot this forever. 📸", "Ugh. You two are a lot. 💋"],
+  'im sorry':             ["Apology logged. Now grovel harder. 😇", "Sent with humility. Good. 🙏", "They'll forgive you. Eventually. 😌"],
 }
 
 function rand(arr) { return arr[Math.floor(Math.random() * arr.length)] }
@@ -81,12 +81,12 @@ export default function ThinkingOfYou() {
   return (
     <div>
       <div style={styles.header}>
-        <div className="section-label" style={{ color: 'var(--red-dark)', marginBottom: 0, fontSize: 9 }}>
+        <div className="section-label" style={{ color: '#3b0764', marginBottom: 0, fontSize: 11 }}>
           💌 SEND A VIBE
         </div>
       </div>
 
-      <div style={{ ...styles.card, borderColor: flash ? 'var(--yellow-dark)' : 'var(--red-dark)', boxShadow: flash ? '0 5px 0 var(--yellow-dark)' : '0 5px 0 var(--red-dark)' }}>
+      <div style={{ ...styles.card, borderColor: flash ? 'var(--yellow-dark)' : '#5b21b6', boxShadow: flash ? '0 5px 0 var(--yellow-dark)' : '0 5px 0 #3b0764' }}>
         <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           {stars.map(s => (
             <span key={s.id} style={{ position: 'absolute', fontSize: 20, transform: `translate(${s.x}px, ${s.y}px)`, animation: 'float 1s ease-out forwards', pointerEvents: 'none' }}>⭐</span>
@@ -100,7 +100,7 @@ export default function ThinkingOfYou() {
           <div style={styles.whoRow}>
             {['Helena', 'Sami'].map(n => (
               <button key={n} onClick={() => setWho(n)}
-                style={{ ...styles.whoBtn, background: who === n ? 'var(--red)' : 'white', color: who === n ? 'white' : 'var(--text2)', borderColor: who === n ? 'var(--red-dark)' : '#ddd', boxShadow: who === n ? '0 3px 0 var(--red-dark)' : '0 2px 0 #ccc' }}>
+                style={{ ...styles.whoBtn, background: who === n ? '#5b21b6' : 'white', color: who === n ? 'white' : 'var(--text2)', borderColor: who === n ? '#3b0764' : '#ddd', boxShadow: who === n ? '0 3px 0 #3b0764' : '0 2px 0 #ccc' }}>
                 {n === 'Helena' ? '👩' : '👦'} {n}
               </button>
             ))}
@@ -112,7 +112,7 @@ export default function ThinkingOfYou() {
               return (
                 <button key={m.type} onClick={() => sendPing(m.type)} disabled={!!pinging}
                   style={{ ...styles.moodBtn, opacity: pinging && !isSending ? 0.5 : 1, background: isSending ? 'var(--yellow-light)' : 'white', borderColor: isSending ? 'var(--yellow-dark)' : '#ddd', boxShadow: isSending ? '0 3px 0 var(--yellow-dark)' : '0 3px 0 #ccc', transform: isSending ? 'translateY(2px)' : 'none' }}>
-                  <span style={{ fontSize: 22 }}>{m.emoji}</span>
+                  <span style={{ fontSize: 18 }}>{m.emoji}</span>
                   <span style={{ fontSize: 11, fontWeight: 700, color: isSending ? 'var(--yellow-dark)' : 'var(--text2)', lineHeight: 1.2 }}>
                     {isSending ? 'sent! 💌' : m.label}
                   </span>
@@ -139,7 +139,7 @@ export default function ThinkingOfYou() {
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 1 }}>
                           <span style={{ fontWeight: 800, color: 'var(--text)', fontSize: 12 }}>{name}</span>
                           {mood
-                            ? <span style={{ fontSize: 11, color: 'var(--red-dark)' }}>{moodData?.emoji} {mood}</span>
+                            ? <span style={{ fontSize: 11, color: '#5b21b6' }}>{moodData?.emoji} {moodData?.label || mood}</span>
                             : <span style={{ fontSize: 11, color: 'var(--text2)' }}>❤️ ping</span>
                           }
                           <span style={{ color: '#bbb', fontSize: 10 }}>{timeAgo(ping.created_at)}</span>
@@ -163,15 +163,15 @@ const styles = {
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 },
   card: {
     background: 'var(--white)', borderRadius: 16, border: '3px solid',
-    padding: '20px 16px', textAlign: 'center', transition: 'border-color 0.3s, box-shadow 0.3s'
+    padding: '14px 12px', textAlign: 'center', transition: 'border-color 0.3s, box-shadow 0.3s'
   },
-  sub: { fontSize: 14, color: 'var(--text2)', fontWeight: 600, marginBottom: 12, lineHeight: 1.6 },
+  sub: { fontSize: 13, color: 'var(--text2)', fontWeight: 600, marginBottom: 8, lineHeight: 1.4 },
   whoRow: { display: 'flex', gap: 10, justifyContent: 'center', marginBottom: 14 },
   whoBtn: { fontSize: 14, fontWeight: 700, padding: '7px 14px', borderRadius: 8, border: '2px solid', cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s' },
-  moodGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, width: '100%', marginBottom: 12 },
+  moodGrid: { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 6, width: '100%', marginBottom: 10 },
   moodBtn: {
-    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
-    padding: '10px 6px', border: '2px solid', borderRadius: 10,
+    display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 6, justifyContent: 'flex-start',
+    padding: '7px 10px', border: '2px solid', borderRadius: 10,
     cursor: 'pointer', fontFamily: "'Nunito', sans-serif", transition: 'all 0.15s'
   },
   sentMsg: { fontSize: 14, fontWeight: 700, color: 'var(--green)', marginBottom: 8 },

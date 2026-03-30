@@ -100,10 +100,10 @@ export default function Countdowns() {
       {/* HERO COUNTDOWN */}
       <div style={styles.heroWrap}>
         <div style={styles.heroTop}>
-          <div className="section-label" style={{ color: 'var(--red-dark)', marginBottom: 0, fontSize: 9 }}>
+          <div className="section-label" style={{ color: 'var(--red-dark)', marginBottom: 0, fontSize: 11 }}>
             ❤️ NEXT TIME TOGETHER
           </div>
-          <button className="btn btn-ghost" style={{ fontSize: 12 }} onClick={openEditHero}>
+          <button className="btn btn-ghost" style={{ fontSize: 10, padding: '4px 8px' }} onClick={openEditHero}>
             ✏️ {hero ? 'Edit' : 'Set date'}
           </button>
         </div>
@@ -187,10 +187,10 @@ export default function Countdowns() {
       {/* OTHER COUNTDOWNS */}
       <div style={{ marginTop: 20 }}>
         <div style={styles.subHeader}>
-          <div className="section-label" style={{ color: 'var(--yellow-dark)', marginBottom: 0, fontSize: 9 }}>
-            ⭐ OTHER COUNTDOWNS
+          <div className="section-label" style={{ color: 'var(--yellow-dark)', marginBottom: 0, fontSize: 11 }}>
+            ⭐ COUNTING DOWN
           </div>
-          <button className="btn btn-yellow" style={{ fontSize: 13 }} onClick={() => setAdding(a => !a)}>
+          <button className="btn btn-yellow" style={{ fontSize: 10, padding: '4px 8px' }} onClick={() => setAdding(a => !a)}>
             {adding ? '✕ Cancel' : '➕ Add'}
           </button>
         </div>
@@ -257,7 +257,7 @@ const styles = {
   heroEmoji: { fontSize: 22 },
   heroLabel: { fontSize: 14, fontWeight: 800, color: 'var(--text)', lineHeight: 1.3 },
   heroDot: { fontSize: 14, color: '#ccc', fontWeight: 400 },
-  heroDaysNum: { fontFamily: "'Press Start 2P', monospace", fontSize: 24, color: 'var(--red)', lineHeight: 1 },
+  heroDaysNum: { fontFamily: "'Press Start 2P', monospace", fontSize: 19, color: 'var(--red)', lineHeight: 1 },
   heroDaysWord: { fontSize: 12, fontWeight: 700, color: 'var(--text2)' },
   heroDone: { fontSize: 20, fontWeight: 800, color: 'var(--green)', textAlign: 'center', padding: '8px 0' },
   trackWrap: { padding: '0 14px 8px', position: 'relative' },
@@ -293,7 +293,7 @@ const styles = {
   grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 12 },
   card: { background: 'var(--white)', borderRadius: 16, border: '3px solid', padding: '18px 14px', textAlign: 'center', position: 'relative' },
   delBtn: { position: 'absolute', top: 8, right: 10, background: 'none', border: 'none', cursor: 'pointer', color: '#ccc', fontSize: 14 },
-  daysNum: { fontSize: 40, fontWeight: 800, color: 'var(--red)', lineHeight: 1, fontFamily: "'Press Start 2P', monospace" },
+  daysNum: { fontSize: 32, fontWeight: 800, color: 'var(--red)', lineHeight: 1, fontFamily: "'Press Start 2P', monospace" },
   daysWord: { fontSize: 12, fontWeight: 700, color: 'var(--text2)', marginTop: 4, marginBottom: 6 },
   cdLabel: { fontSize: 13, fontWeight: 700, color: 'var(--text)', marginTop: 4 },
   todayBadge: { fontSize: 20, fontWeight: 800, color: 'var(--green)', marginBottom: 6 },

@@ -32,7 +32,7 @@ export default function App() {
           <img src="/helena.png" alt="Helena" style={{ ...styles.headerAvatar, animationDelay: '0s' }} />
 <div>
   <h1 className="pixel-title" style={styles.title}>HELENA & SAMI</h1>
-  <p style={styles.subtitle}>our little corner of the internet ⭐</p>
+  <p style={styles.subtitle}>⭐ our little corner of the internet ⭐</p>
 </div>
 <img src="/sami.png" alt="Sami" style={{ ...styles.headerAvatar, animationDelay: '0.3s' }} />
         </div>
@@ -57,14 +57,14 @@ export default function App() {
         </section>
 
         {/* THINKING OF YOU */}
-        <section style={{ ...styles.section, borderColor: 'var(--red-dark)', boxShadow: '0 5px 0 var(--red-dark)' }}>
+        <section style={{ ...styles.section, borderColor: '#3b0764', boxShadow: '0 5px 0 #3b0764' }}>
           <ThinkingOfYou />
         </section>
 
         {/* TASKS — full width */}
         <section style={{ ...styles.section, borderColor: 'var(--red-dark)', boxShadow: '0 5px 0 var(--red-dark)' }}>
           <SharedList
-            title="TASKS"
+            title="OUR SIDE QUEST"
             icon="📋"
             table="todos"
             doneField="completed"
@@ -74,6 +74,7 @@ export default function App() {
             emptyMsg="No tasks. One of you is slacking. 😴"
             emptyEmoji="💤"
             doneLabel="DONE"
+            pageLimit={4}
           />
         </section>
 
@@ -81,7 +82,7 @@ export default function App() {
           {/* WATCH LIST */}
           <section style={{ ...styles.section, borderColor: 'var(--green-dark)', boxShadow: '0 5px 0 var(--green-dark)' }}>
             <SharedList
-              title="WATCH LIST"
+              title="NETFLIX & MORE THAN CHILL"
               icon="🎬"
               table="watchlist"
               doneField="watched"
@@ -92,24 +93,25 @@ export default function App() {
               emptyMsg="Nothing to watch. Pick something. 🍿"
               emptyEmoji="🍿"
               doneLabel="WATCHED"
-              visibleLimit={15}
+              pageLimit={4}
             />
           </section>
 
           {/* BETS */}
-          <section style={{ ...styles.section, borderColor: 'var(--brown)', boxShadow: '0 5px 0 var(--brown)' }}>
+          <section style={{ ...styles.section, borderColor: '#c45d2a', boxShadow: '0 5px 0 #c45d2a' }}>
             <SharedList
-              title="BETS"
+              title="CHARACTER IN DEVELOPMENT"
               icon="🎲"
               table="bets"
               doneField="won"
               placeholder="What's the bet...?"
-              accentColor="var(--brown)"
-              shadowColor="#5c2d0a"
+              accentColor="#d97040"
+              shadowColor="#c45d2a"
               emptyMsg="No bets yet. Someone's scared. 🐔"
               emptyEmoji="🐔"
               doneLabel="SETTLED"
               noMeta
+              pageLimit={5}
             />
           </section>
         </div>
