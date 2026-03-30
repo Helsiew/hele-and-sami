@@ -33,11 +33,10 @@ export default function SharedList({ title, table, doneField, placeholder, icon,
   // Lock list height after first render with items
   useEffect(() => {
     if (listRef.current && items.length > 0 && !listHeight) {
-      // Give it one render cycle to measure
       const h = listRef.current.offsetHeight
       if (h > 0) setListHeight(h)
     }
-  })
+  }, [items.length, listHeight])
 
   const add = async () => {
     if (!text.trim()) return
