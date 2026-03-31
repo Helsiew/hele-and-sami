@@ -48,18 +48,18 @@ function MapPin({ tz, avatar, color }) {
       filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.6))',
     }}>
       <img src={avatar} alt="" style={{
-        width: 28, height: 28,
+        width: 42, height: 42,
         borderRadius: '50%',
-        border: `2.5px solid ${color}`,
+        border: `3px solid ${color}`,
         objectFit: 'cover',
         background: 'white',
         display: 'block',
       }} />
       <div style={{
         width: 0, height: 0,
-        borderLeft: '5px solid transparent',
-        borderRight: '5px solid transparent',
-        borderTop: `7px solid ${color}`,
+        borderLeft: '7px solid transparent',
+        borderRight: '7px solid transparent',
+        borderTop: `10px solid ${color}`,
         marginTop: -1,
       }} />
     </div>
