@@ -15,7 +15,7 @@ const CITY_COORDS = {
   'Asia/Ho_Chi_Minh':   { lat: 10.82,  lng: 106.63 },
   'Asia/Taipei':         { lat: 25.03,  lng: 121.57 },
   'Asia/Hong_Kong':      { lat: 22.32,  lng: 114.17 },
-  'Asia/Shanghai':       { lat: 39.90,  lng: 116.40 }, // Beijing — central China
+  'Asia/Shanghai':       { lat: 30.00,  lng: 112.00 }, // Central China — below Korea on map
   // Europe
   'Europe/Madrid':       { lat: 40.42,  lng: -3.70  },
   'Europe/Helsinki':     { lat: 60.17,  lng: 24.94  },
@@ -34,10 +34,11 @@ const CITY_COORDS = {
   'America/Nassau':      { lat: 25.05,  lng: -77.34 },
   'America/Barbados':    { lat: 13.10,  lng: -59.62 },
   // Australia — effective lats back-calculated so pins land in the right visual
-  // spot on this specific artistic map (real lats push pins off the bottom edge)
-  'Australia/Brisbane':  { lat: 2.50,   lng: 153.02 }, // effective → ~64% down
-  'Australia/Sydney':    { lat: -4.10,  lng: 151.21 }, // effective → ~70% down
-  'Australia/Melbourne': { lat: -8.50,  lng: 144.96 }, // effective → ~74% down
+  // spot on this specific artistic map (real lats push pins off the bottom edge).
+  // Singapore sits at y=65%; AU cities must be > 65% to appear inside the continent.
+  'Australia/Brisbane':  { lat: -0.80,  lng: 153.02 }, // effective → ~67% (northern coast)
+  'Australia/Sydney':    { lat: -6.30,  lng: 151.21 }, // effective → ~72% (east coast mid)
+  'Australia/Melbourne': { lat: -9.50,  lng: 144.96 }, // effective → ~75% (southern coast)
 }
 
 // Equirectangular projection with y-calibration for this specific worldmap.png.
