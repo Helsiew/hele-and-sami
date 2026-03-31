@@ -108,11 +108,13 @@ function ClockCard({ name, city, tz, avatar, color, shadowColor }) {
   }, [])
   return (
     <div style={{ ...styles.clock, borderColor: shadowColor, boxShadow: `0 5px 0 ${shadowColor}` }}>
-      <img src={avatar} alt={name} style={{ width: 56, height: 56, objectFit: 'cover', borderRadius: '50%', border: `3px solid ${shadowColor}`, flexShrink: 0 }} />
+      <img src={avatar} alt={name} style={{ width: 44, height: 44, objectFit: 'cover', borderRadius: '50%', border: `3px solid ${shadowColor}`, flexShrink: 0 }} />
       <div style={{ textAlign: 'left' }}>
-        <div style={{ fontSize: 13, fontWeight: 800, color: shadowColor, marginBottom: 1 }}>{name}</div>
-        <div style={{ fontSize: 12, color: 'var(--text2)', marginBottom: 4 }}>📍 {city}</div>
-        <div style={{ fontSize: 28, fontWeight: 800, color, fontVariantNumeric: 'tabular-nums', letterSpacing: 1, lineHeight: 1 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3, flexWrap: 'wrap' }}>
+          <span style={{ fontSize: 13, fontWeight: 800, color: shadowColor }}>{name}</span>
+          <span style={{ fontSize: 11, color: 'var(--text2)', fontWeight: 600 }}>📍 {city}</span>
+        </div>
+        <div style={{ fontSize: 26, fontWeight: 800, color, fontVariantNumeric: 'tabular-nums', letterSpacing: 1, lineHeight: 1 }}>
           {getTime(tz)}
         </div>
         <div style={{ fontSize: 11, color: 'var(--text2)', marginTop: 2, fontWeight: 600 }}>{getDate(tz)}</div>
@@ -229,8 +231,8 @@ const styles = {
   clocks: { display: 'flex', gap: 12, flexWrap: 'wrap' },
   clock: {
     background: 'var(--white)', borderRadius: 16, border: '3px solid',
-    padding: '12px 16px', display: 'flex', flexDirection: 'row',
-    alignItems: 'center', gap: 12, flex: 1, minWidth: 200,
+    padding: '8px 12px', display: 'flex', flexDirection: 'row',
+    alignItems: 'center', gap: 10, flex: 1, minWidth: 180,
   },
   modalBg: {
     position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)',
