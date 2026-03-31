@@ -3,7 +3,17 @@ import { supabase } from '../supabaseClient'
 
 // Lat/lng for every timezone option — pins auto-move when location updates
 const CITY_COORDS = {
+  // Asia
   'Asia/Singapore':      { lat: 1.35,   lng: 103.82 },
+  'Asia/Dubai':          { lat: 25.20,  lng: 55.27  },
+  'Asia/Tokyo':          { lat: 35.68,  lng: 139.69 },
+  'Asia/Seoul':          { lat: 37.57,  lng: 126.98 },
+  'Asia/Bangkok':        { lat: 13.76,  lng: 100.50 },
+  'Asia/Ho_Chi_Minh':   { lat: 10.82,  lng: 106.63 },
+  'Asia/Taipei':         { lat: 25.03,  lng: 121.57 },
+  'Asia/Hong_Kong':      { lat: 22.32,  lng: 114.17 },
+  'Asia/Shanghai':       { lat: 31.23,  lng: 121.47 },
+  // Europe
   'Europe/Madrid':       { lat: 40.42,  lng: -3.70  },
   'Europe/Helsinki':     { lat: 60.17,  lng: 24.94  },
   'Europe/London':       { lat: 51.51,  lng: -0.13  },
@@ -12,11 +22,19 @@ const CITY_COORDS = {
   'Europe/Rome':         { lat: 41.90,  lng: 12.50  },
   'Europe/Amsterdam':    { lat: 52.37,  lng: 4.90   },
   'Europe/Lisbon':       { lat: 38.72,  lng: -9.14  },
-  'Asia/Dubai':          { lat: 25.20,  lng: 55.27  },
-  'Asia/Tokyo':          { lat: 35.68,  lng: 139.69 },
-  'Australia/Sydney':    { lat: -33.87, lng: 151.21 },
+  'Europe/Athens':       { lat: 37.98,  lng: 23.73  },
+  'Europe/Zagreb':       { lat: 45.81,  lng: 15.98  },
+  'Atlantic/Canary':     { lat: 28.29,  lng: -16.63 },
+  // Americas
   'America/New_York':    { lat: 40.71,  lng: -74.01 },
   'America/Los_Angeles': { lat: 34.05,  lng: -118.24 },
+  'America/Nassau':      { lat: 25.05,  lng: -77.34 },
+  'America/Barbados':    { lat: 13.10,  lng: -59.62 },
+  // Australia
+  'Australia/Sydney':    { lat: -33.87, lng: 151.21 },
+  'Australia/Melbourne': { lat: -37.81, lng: 144.96 },
+  'Australia/Brisbane':  { lat: -27.47, lng: 153.02 },
+  'Australia/Canberra':  { lat: -35.28, lng: 149.13 },
 }
 
 // Equirectangular projection with y-calibration for this specific worldmap.png.
@@ -77,7 +95,17 @@ function WorldMap({ helenaTz, samiTz }) {
 }
 
 const TIMEZONES = [
+  // Asia
   { label: 'Singapore / KL', value: 'Asia/Singapore' },
+  { label: 'UAE (Dubai)', value: 'Asia/Dubai' },
+  { label: 'Japan (Tokyo)', value: 'Asia/Tokyo' },
+  { label: 'Korea (Seoul)', value: 'Asia/Seoul' },
+  { label: 'Thailand (Bangkok / Phuket)', value: 'Asia/Bangkok' },
+  { label: 'Vietnam (Ho Chi Minh)', value: 'Asia/Ho_Chi_Minh' },
+  { label: 'Taiwan (Taipei)', value: 'Asia/Taipei' },
+  { label: 'Hong Kong', value: 'Asia/Hong_Kong' },
+  { label: 'China (Shanghai)', value: 'Asia/Shanghai' },
+  // Europe
   { label: 'Spain (Madrid)', value: 'Europe/Madrid' },
   { label: 'Finland (Helsinki)', value: 'Europe/Helsinki' },
   { label: 'UK (London)', value: 'Europe/London' },
@@ -86,11 +114,19 @@ const TIMEZONES = [
   { label: 'Italy (Rome)', value: 'Europe/Rome' },
   { label: 'Netherlands', value: 'Europe/Amsterdam' },
   { label: 'Portugal (Lisbon)', value: 'Europe/Lisbon' },
-  { label: 'UAE (Dubai)', value: 'Asia/Dubai' },
-  { label: 'Japan (Tokyo)', value: 'Asia/Tokyo' },
-  { label: 'Australia (Sydney)', value: 'Australia/Sydney' },
+  { label: 'Greece (Athens)', value: 'Europe/Athens' },
+  { label: 'Croatia (Zagreb)', value: 'Europe/Zagreb' },
+  { label: 'Canary Islands', value: 'Atlantic/Canary' },
+  // Americas
   { label: 'USA (New York)', value: 'America/New_York' },
   { label: 'USA (LA)', value: 'America/Los_Angeles' },
+  { label: 'Bahamas (Nassau)', value: 'America/Nassau' },
+  { label: 'Caribbean (Barbados)', value: 'America/Barbados' },
+  // Australia
+  { label: 'Australia (Sydney)', value: 'Australia/Sydney' },
+  { label: 'Australia (Melbourne)', value: 'Australia/Melbourne' },
+  { label: 'Australia (Brisbane)', value: 'Australia/Brisbane' },
+  { label: 'Australia (Canberra)', value: 'Australia/Canberra' },
 ]
 
 function getTime(tz) {
