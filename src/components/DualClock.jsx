@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { supabase } from '../supabaseClient'
 
-// Lat/lng for every timezone option — pins auto-move when location updates
+// Lat/lng for every timezone option — pins auto-move when location updates.
+// Australian cities use effective (mapped) lats because the artistic Mario map
+// places the southern hemisphere much higher than a real equirectangular formula
+// would — real coords push AU pins completely off the bottom edge of the image.
 const CITY_COORDS = {
   // Asia
   'Asia/Singapore':      { lat: 1.35,   lng: 103.82 },
@@ -12,7 +15,7 @@ const CITY_COORDS = {
   'Asia/Ho_Chi_Minh':   { lat: 10.82,  lng: 106.63 },
   'Asia/Taipei':         { lat: 25.03,  lng: 121.57 },
   'Asia/Hong_Kong':      { lat: 22.32,  lng: 114.17 },
-  'Asia/Shanghai':       { lat: 31.23,  lng: 121.47 },
+  'Asia/Shanghai':       { lat: 39.90,  lng: 116.40 }, // Beijing — central China
   // Europe
   'Europe/Madrid':       { lat: 40.42,  lng: -3.70  },
   'Europe/Helsinki':     { lat: 60.17,  lng: 24.94  },
@@ -30,11 +33,11 @@ const CITY_COORDS = {
   'America/Los_Angeles': { lat: 34.05,  lng: -118.24 },
   'America/Nassau':      { lat: 25.05,  lng: -77.34 },
   'America/Barbados':    { lat: 13.10,  lng: -59.62 },
-  // Australia
-  'Australia/Sydney':    { lat: -33.87, lng: 151.21 },
-  'Australia/Melbourne': { lat: -37.81, lng: 144.96 },
-  'Australia/Brisbane':  { lat: -27.47, lng: 153.02 },
-  'Australia/Canberra':  { lat: -35.28, lng: 149.13 },
+  // Australia — effective lats back-calculated so pins land in the right visual
+  // spot on this specific artistic map (real lats push pins off the bottom edge)
+  'Australia/Brisbane':  { lat: 2.50,   lng: 153.02 }, // effective → ~64% down
+  'Australia/Sydney':    { lat: -4.10,  lng: 151.21 }, // effective → ~70% down
+  'Australia/Melbourne': { lat: -8.50,  lng: 144.96 }, // effective → ~74% down
 }
 
 // Equirectangular projection with y-calibration for this specific worldmap.png.
@@ -104,7 +107,7 @@ const TIMEZONES = [
   { label: 'Vietnam (Ho Chi Minh)', value: 'Asia/Ho_Chi_Minh' },
   { label: 'Taiwan (Taipei)', value: 'Asia/Taipei' },
   { label: 'Hong Kong', value: 'Asia/Hong_Kong' },
-  { label: 'China (Shanghai)', value: 'Asia/Shanghai' },
+  { label: 'China', value: 'Asia/Shanghai' },
   // Europe
   { label: 'Spain (Madrid)', value: 'Europe/Madrid' },
   { label: 'Finland (Helsinki)', value: 'Europe/Helsinki' },
@@ -123,10 +126,9 @@ const TIMEZONES = [
   { label: 'Bahamas (Nassau)', value: 'America/Nassau' },
   { label: 'Caribbean (Barbados)', value: 'America/Barbados' },
   // Australia
+  { label: 'Australia (Brisbane)', value: 'Australia/Brisbane' },
   { label: 'Australia (Sydney)', value: 'Australia/Sydney' },
   { label: 'Australia (Melbourne)', value: 'Australia/Melbourne' },
-  { label: 'Australia (Brisbane)', value: 'Australia/Brisbane' },
-  { label: 'Australia (Canberra)', value: 'Australia/Canberra' },
 ]
 
 function getTime(tz) {
