@@ -235,6 +235,9 @@ export default function Countdowns() {
                   </>
                 )}
                 <div style={styles.cdLabel}>{cd.label}</div>
+                <div style={styles.cdDate}>
+                  {new Date(cd.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                </div>
               </div>
             )
           })}
@@ -296,6 +299,7 @@ const styles = {
   daysNum: { fontSize: 32, fontWeight: 800, color: 'var(--red)', lineHeight: 1, fontFamily: "'Press Start 2P', monospace" },
   daysWord: { fontSize: 12, fontWeight: 700, color: 'var(--text2)', marginTop: 4, marginBottom: 6 },
   cdLabel: { fontSize: 13, fontWeight: 700, color: 'var(--text)', marginTop: 4 },
+  cdDate: { fontSize: 10, fontWeight: 600, color: 'var(--text2)', marginTop: 3, opacity: 0.8 },
   todayBadge: { fontSize: 20, fontWeight: 800, color: 'var(--green)', marginBottom: 6 },
   empty: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, padding: '12px 0' }
 }
